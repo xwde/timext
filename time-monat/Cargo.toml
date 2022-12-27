@@ -1,0 +1,12 @@
+# https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[package]
+name = "time_monat"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+path = "./lib.rs"
+
+[dependencies]
+time = "0.3.17"
