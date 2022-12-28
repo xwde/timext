@@ -5,18 +5,15 @@
 extern crate core;
 
 pub use duration::MonthDuration;
-pub use extension::MonthExtension;
-pub use numeric::NumericMonthDuration;
+pub use extensions::date::MonthExtension;
+pub use extensions::numeric::NumericMonthDuration;
 
 mod duration;
-mod extension;
 mod features;
-mod numeric;
+mod extensions;
 
 #[cfg(test)]
 mod duration_test;
-#[cfg(test)]
-mod extension_test;
 
 #[cfg(feature = "serde")]
 pub mod serde {

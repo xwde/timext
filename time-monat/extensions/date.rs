@@ -1,10 +1,9 @@
 use std::ops::{Add, AddAssign, Sub, SubAssign};
 
-use time::util::days_in_year_month;
 use time::{Date, Month, OffsetDateTime, PrimitiveDateTime};
+use time::util::days_in_year_month;
 
 use crate::duration::MonthDuration;
-use crate::numeric::NumericMonthDuration;
 
 mod sealed {
     use time::{Date, OffsetDateTime, PrimitiveDateTime};
@@ -56,8 +55,8 @@ impl MonthExtension for Date {
     }
 
     fn checked_calendar_sub(&self, duration: MonthDuration) -> Option<Self> {
-        let months = duration.whole_months().checked_neg()?.months();
-        self.checked_calendar_add(months)
+        let months = duration.whole_months().checked_neg()?;
+        self.checked_calendar_add(MonthDuration::months(months))
     }
 
     fn saturating_calendar_add(&self, duration: MonthDuration) -> Self {
