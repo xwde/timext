@@ -1,13 +1,14 @@
 use std::ops::{Add, AddAssign, Sub, SubAssign};
 
-use time::{Date, Month, OffsetDateTime, PrimitiveDateTime};
-use time::util::days_in_year_month;
+use time::{Date, OffsetDateTime, PrimitiveDateTime};
 
 use crate::duration::MonthDuration;
 
+/// Sealed trait to prevent downstream implementations.
 mod sealed {
     use time::{Date, OffsetDateTime, PrimitiveDateTime};
 
+    /// A trait that cannot be implemented by downstream users.
     pub trait Sealed {}
 
     impl Sealed for Date {}
@@ -26,37 +27,11 @@ pub trait MonthExtension: sealed::Sealed + Sized {
 
 impl MonthExtension for Date {
     fn checked_calendar_add(&self, duration: MonthDuration) -> Option<Self> {
-        // [1, 12] + [-11, 11]
-        let month = duration.subyear_months();
-        let month = month.checked_add(self.month() as i32)?;
-
-        // Aug(8) + 6 = Feb(2) or Feb(2) - 6 = Aug(8)
-        let added = match month {
-            x if x.is_positive() => x / 12,
-            _ => -1,
-        };
-
-        debug_assert!((-1..=1).contains(&added));
-        let year = duration
-            .whole_years()
-            .checked_add(added)?
-            .checked_add(self.year())?;
-
-        // Feb(2) - 6 = -4; 12 - 4 = Aug(8)
-        let month = match month {
-            x if x.is_positive() => x % 12,
-            x => 12 + x,
-        };
-
-        debug_assert!((1..=12).contains(&month));
-        let month = Month::try_from(month as u8).unwrap();
-        let day = days_in_year_month(year, month).min(self.day());
-        Date::from_calendar_date(year, month, day).ok()
+        duration.checked_date_add(self)
     }
 
     fn checked_calendar_sub(&self, duration: MonthDuration) -> Option<Self> {
-        let months = duration.whole_months().checked_neg()?;
-        self.checked_calendar_add(MonthDuration::months(months))
+        duration.checked_date_sub(self)
     }
 
     fn saturating_calendar_add(&self, duration: MonthDuration) -> Self {
