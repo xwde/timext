@@ -1,12 +1,12 @@
 use std::fmt::{Display, Formatter};
 use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
-use time::{Date, Month};
 use time::util::days_in_year_month;
+use time::{Date, Month};
 
 #[derive(Clone, Copy, Default, PartialEq, Eq, Hash, PartialOrd, Ord, Debug)]
 pub struct MonthDuration {
-    // TODO Replace with f32
+    // TODO Represent floating part? Replace with f32?
     // see https://github.com/martsokha/timext/issues/6
     months: i32,
 }

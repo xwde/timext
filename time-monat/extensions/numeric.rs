@@ -9,10 +9,9 @@ mod sealed {
 
     impl Sealed for u32 {}
 
-    impl Sealed for f32 {}
+    // impl Sealed for f32 {} TODO see time_monat::MonthDuration
 }
 
-#[const_trait]
 pub trait NumericMonthDuration: sealed::Sealed {
     fn months(self) -> MonthDuration;
     fn years(self) -> MonthDuration;
@@ -25,7 +24,7 @@ pub trait NumericMonthDuration: sealed::Sealed {
 /// assert_eq!((-1).months(), MonthDuration::months(-1));
 /// assert_eq!((-1).years(), MonthDuration::years(-1));
 /// ```
-impl const NumericMonthDuration for i32 {
+impl NumericMonthDuration for i32 {
     fn months(self) -> MonthDuration {
         MonthDuration::months(self)
     }
@@ -40,7 +39,7 @@ impl const NumericMonthDuration for i32 {
 /// assert_eq!(1_u32.months(), MonthDuration::months(1));
 /// assert_eq!(1_u32.years(), MonthDuration::years(1));
 /// ```
-impl const NumericMonthDuration for u32 {
+impl NumericMonthDuration for u32 {
     fn months(self) -> MonthDuration {
         (self as i32).months()
     }
