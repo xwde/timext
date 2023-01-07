@@ -1,33 +1,41 @@
+use std::fmt::Formatter;
+
+use serde::de::{Error, Visitor};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
-use crate::duration::MonthDuration;
+use crate::MonthDuration;
 
-// TODO Impl feature Serde
-// see https://github.com/martsokha/timext/issues/4
 impl Serialize for MonthDuration {
-    fn serialize<S>(&self, serializer: S) -> Result<serde::ser::Ok, dyn serde::ser::Error>
-        where
-            S: Serializer,
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
     {
-        todo!()
+        serializer.serialize_i32(self.whole_months())
+    }
+}
+
+struct MonthDurationVisitor;
+
+impl<'de> Visitor<'de> for MonthDurationVisitor {
+    type Value = MonthDuration;
+
+    fn expecting(&self, formatter: &mut Formatter<'_>) -> std::fmt::Result {
+        formatter.write_str("a `MonthDuration`")
+    }
+
+    fn visit_i32<E>(self, v: i32) -> Result<Self::Value, E>
+    where
+        E: Error,
+    {
+        Ok(MonthDuration::months(v))
     }
 }
 
 impl<'de> Deserialize<'de> for MonthDuration {
-    fn deserialize<D>(deserializer: D) -> Result<Self, dyn serde::de::Error>
-        where
-            D: Deserializer<'de>,
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
     {
-        todo!()
-    }
-
-    fn deserialize_in_place<D>(
-        deserializer: D,
-        place: &mut Self,
-    ) -> Result<(), dyn serde::de::Error>
-        where
-            D: Deserializer<'de>,
-    {
-        todo!()
+        deserializer.deserialize_i32(MonthDurationVisitor)
     }
 }

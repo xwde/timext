@@ -35,6 +35,11 @@ impl const NumericMonthDuration for i32 {
     }
 }
 
+/// ```rust
+/// # use time_monat::{MonthDuration, NumericMonthDuration};
+/// assert_eq!(1_u32.months(), MonthDuration::months(1));
+/// assert_eq!(1_u32.years(), MonthDuration::years(1));
+/// ```
 impl const NumericMonthDuration for u32 {
     fn months(self) -> MonthDuration {
         (self as i32).months()
@@ -42,22 +47,5 @@ impl const NumericMonthDuration for u32 {
 
     fn years(self) -> MonthDuration {
         (self as i32).years()
-    }
-}
-
-/// ```rust
-/// # use time_monat::{MonthDuration, NumericMonthDuration};
-/// assert_eq!((1.5).months(), MonthDuration::months(1));
-/// assert_eq!((1.5).years(), MonthDuration::months(18));
-/// assert_eq!((-1.5).months(), MonthDuration::months(-1));
-/// assert_eq!((-1.5).years(), MonthDuration::months(-18));
-/// ```
-impl const NumericMonthDuration for f32 {
-    fn months(self) -> MonthDuration {
-        (self as i32).months()
-    }
-
-    fn years(self) -> MonthDuration {
-        (self * 12.).months()
     }
 }
