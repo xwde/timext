@@ -19,22 +19,22 @@ mod sealed {
 }
 
 pub trait MonthExtension: sealed::Sealed + Sized {
-    fn checked_calendar_add(&self, duration: MonthDuration) -> Option<Self>;
-    fn checked_calendar_sub(&self, duration: MonthDuration) -> Option<Self>;
-    fn saturating_calendar_add(&self, duration: MonthDuration) -> Self;
-    fn saturating_calendar_sub(&self, duration: MonthDuration) -> Self;
+    fn checked_calendar_add(self, duration: MonthDuration) -> Option<Self>;
+    fn checked_calendar_sub(self, duration: MonthDuration) -> Option<Self>;
+    fn saturating_calendar_add(self, duration: MonthDuration) -> Self;
+    fn saturating_calendar_sub(self, duration: MonthDuration) -> Self;
 }
 
 impl MonthExtension for Date {
-    fn checked_calendar_add(&self, duration: MonthDuration) -> Option<Self> {
+    fn checked_calendar_add(self, duration: MonthDuration) -> Option<Self> {
         duration.checked_date_add(self)
     }
 
-    fn checked_calendar_sub(&self, duration: MonthDuration) -> Option<Self> {
+    fn checked_calendar_sub(self, duration: MonthDuration) -> Option<Self> {
         duration.checked_date_sub(self)
     }
 
-    fn saturating_calendar_add(&self, duration: MonthDuration) -> Self {
+    fn saturating_calendar_add(self, duration: MonthDuration) -> Self {
         if let Some(datetime) = self.checked_calendar_add(duration) {
             datetime
         } else if duration.is_negative() {
@@ -45,7 +45,7 @@ impl MonthExtension for Date {
         }
     }
 
-    fn saturating_calendar_sub(&self, duration: MonthDuration) -> Self {
+    fn saturating_calendar_sub(self, duration: MonthDuration) -> Self {
         if let Some(datetime) = self.checked_calendar_sub(duration) {
             datetime
         } else if duration.is_negative() {
@@ -88,17 +88,17 @@ impl SubAssign<MonthDuration> for Date {
 }
 
 impl MonthExtension for PrimitiveDateTime {
-    fn checked_calendar_add(&self, duration: MonthDuration) -> Option<Self> {
+    fn checked_calendar_add(self, duration: MonthDuration) -> Option<Self> {
         let date = self.date().checked_calendar_add(duration)?;
         Some(self.replace_date(date))
     }
 
-    fn checked_calendar_sub(&self, duration: MonthDuration) -> Option<Self> {
+    fn checked_calendar_sub(self, duration: MonthDuration) -> Option<Self> {
         let date = self.date().checked_calendar_sub(duration)?;
         Some(self.replace_date(date))
     }
 
-    fn saturating_calendar_add(&self, duration: MonthDuration) -> Self {
+    fn saturating_calendar_add(self, duration: MonthDuration) -> Self {
         if let Some(datetime) = self.checked_calendar_add(duration) {
             datetime
         } else if duration.is_negative() {
@@ -109,7 +109,7 @@ impl MonthExtension for PrimitiveDateTime {
         }
     }
 
-    fn saturating_calendar_sub(&self, duration: MonthDuration) -> Self {
+    fn saturating_calendar_sub(self, duration: MonthDuration) -> Self {
         if let Some(datetime) = self.checked_calendar_sub(duration) {
             datetime
         } else if duration.is_negative() {
@@ -152,17 +152,17 @@ impl SubAssign<MonthDuration> for PrimitiveDateTime {
 }
 
 impl MonthExtension for OffsetDateTime {
-    fn checked_calendar_add(&self, duration: MonthDuration) -> Option<Self> {
+    fn checked_calendar_add(self, duration: MonthDuration) -> Option<Self> {
         let date = self.date().checked_calendar_add(duration)?;
         Some(self.replace_date(date))
     }
 
-    fn checked_calendar_sub(&self, duration: MonthDuration) -> Option<Self> {
+    fn checked_calendar_sub(self, duration: MonthDuration) -> Option<Self> {
         let date = self.date().checked_calendar_sub(duration)?;
         Some(self.replace_date(date))
     }
 
-    fn saturating_calendar_add(&self, duration: MonthDuration) -> Self {
+    fn saturating_calendar_add(self, duration: MonthDuration) -> Self {
         if let Some(datetime) = self.checked_calendar_add(duration) {
             datetime
         } else if duration.is_negative() {
@@ -173,7 +173,7 @@ impl MonthExtension for OffsetDateTime {
         }
     }
 
-    fn saturating_calendar_sub(&self, duration: MonthDuration) -> Self {
+    fn saturating_calendar_sub(self, duration: MonthDuration) -> Self {
         if let Some(datetime) = self.checked_calendar_sub(duration) {
             datetime
         } else if duration.is_negative() {

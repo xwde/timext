@@ -4,10 +4,10 @@ use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssi
 use time::util::days_in_year_month;
 use time::{Date, Month};
 
+// TODO Represent fraction of week with opt f32?
+// see https://github.com/martsokha/timext/issues/6
 #[derive(Clone, Copy, Default, PartialEq, Eq, Hash, PartialOrd, Ord, Debug)]
 pub struct MonthDuration {
-    // TODO Represent floating part? Replace with f32?
-    // see https://github.com/martsokha/timext/issues/6
     months: i32,
 }
 
@@ -115,7 +115,7 @@ impl MonthDuration {
         Self::months(self.whole_months().abs())
     }
 
-    pub fn checked_date_add(self, date: &Date) -> Option<Date> {
+    pub fn checked_date_add(self, date: Date) -> Option<Date> {
         // [1, 12] + [-11, 11]
         let month = self.subyear_months();
         let month = month.checked_add(date.month() as i32)?;
@@ -144,7 +144,7 @@ impl MonthDuration {
         Date::from_calendar_date(year, month, day).ok()
     }
 
-    pub fn checked_date_sub(self, date: &Date) -> Option<Date> {
+    pub fn checked_date_sub(self, date: Date) -> Option<Date> {
         let duration = self.checked_neg()?;
         duration.checked_date_add(date)
     }
@@ -249,9 +249,6 @@ impl Display for MonthDuration {
     }
 }
 
-// TODO Mut/Div u8, u16,i8, i16, f32 traits
-// see https://github.com/martsokha/timext/issues/5
-
 impl Add for MonthDuration {
     type Output = Self;
 
@@ -291,32 +288,46 @@ impl Neg for MonthDuration {
     }
 }
 
-impl Div<i32> for MonthDuration {
-    type Output = Self;
+macro_rules! impl_div_mul_md {
+    ($($t:ty),+) => {$(
+        impl Div<$t> for MonthDuration {
+            type Output = Self;
 
-    fn div(self, rhs: i32) -> Self::Output {
-        self.checked_div(rhs)
-            .expect("overflow when dividing MonthDuration")
-    }
+            fn div(self, rhs: $t) -> Self::Output {
+                self.checked_div(rhs as i32)
+                    .expect("overflow when dividing MonthDuration")
+            }
+        }
+
+        impl DivAssign<$t> for MonthDuration {
+            fn div_assign(&mut self, rhs: $t) {
+                *self = *self / rhs
+            }
+        }
+
+        impl Mul<$t> for MonthDuration {
+            type Output = Self;
+
+            fn mul(self, rhs: $t) -> Self::Output {
+                self.checked_mul(rhs as i32)
+                    .expect("overflow when multiplying MonthDuration")
+            }
+        }
+
+        impl Mul<MonthDuration> for $t {
+            type Output = MonthDuration;
+
+            fn mul(self, rhs: MonthDuration) -> Self::Output {
+                rhs * self
+            }
+        }
+
+        impl MulAssign<$t> for MonthDuration {
+            fn mul_assign(&mut self, rhs: $t) {
+                *self = *self * rhs
+            }
+        }
+    )+};
 }
 
-impl DivAssign<i32> for MonthDuration {
-    fn div_assign(&mut self, rhs: i32) {
-        *self = *self / rhs
-    }
-}
-
-impl Mul<i32> for MonthDuration {
-    type Output = Self;
-
-    fn mul(self, rhs: i32) -> Self::Output {
-        self.checked_mul(rhs)
-            .expect("overflow when multiplying MonthDuration")
-    }
-}
-
-impl MulAssign<i32> for MonthDuration {
-    fn mul_assign(&mut self, rhs: i32) {
-        *self = *self * rhs
-    }
-}
+impl_div_mul_md![i8, i16, i32, u8, u16, u32];

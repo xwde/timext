@@ -9,7 +9,7 @@ mod sealed {
 
     impl Sealed for u32 {}
 
-    // impl Sealed for f32 {} TODO see time_monat::MonthDuration
+    // impl Sealed for f32 {}
 }
 
 pub trait NumericMonthDuration: sealed::Sealed {
