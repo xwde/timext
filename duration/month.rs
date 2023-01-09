@@ -1,8 +1,8 @@
 use std::fmt::{Display, Formatter};
 use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
-use time::{Date, Month};
 use time::util::days_in_year_month;
+use time::{Date, Month};
 
 // TODO Represent fraction of week with opt f32?
 // see https://github.com/martsokha/timext/issues/6

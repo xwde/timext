@@ -2,7 +2,7 @@ use std::ops::{Add, AddAssign, Sub, SubAssign};
 
 use time::{Date, OffsetDateTime, PrimitiveDateTime};
 
-use crate::duration::MonthDuration;
+use crate::MonthDuration;
 
 /// Sealed trait to prevent downstream implementations.
 mod sealed {
