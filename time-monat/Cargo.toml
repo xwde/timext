@@ -1,0 +1,18 @@
+# https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[package]
+name = "time-monat"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+path = "./lib.rs"
+
+[features]
+serde = ["dep:serde"]
+rand = ["dep:rand"]
+
+[dependencies]
+time = "0.3.17"
+serde = { version = "1.0.152", optional = true, default-features = false }
+rand = { version = "0.8.5", optional = true, default-features = false }
