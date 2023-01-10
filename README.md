@@ -9,8 +9,7 @@ The collection of [time-rs/time](https://github.com/time-rs/time/) extensions:
 
 ```rust
 use time::{Date, Month};
-
-use crate::NumericMonthDuration;
+use timext::ext::NumericMonthDuration;
 
 fn main() {
     let d0 = Date::from_calendar_date(2023, Month::January, 31).unwrap();
