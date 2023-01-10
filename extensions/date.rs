@@ -190,7 +190,7 @@ mod tests {
     use time::Date;
     use time::Month::*;
 
-    use crate::{MonthDuration, MonthExtension};
+    use crate::{ext::MonthExtension, MonthDuration};
 
     #[test]
     fn sub_one() {

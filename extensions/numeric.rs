@@ -18,7 +18,7 @@ pub trait NumericMonthDuration: sealed::Sealed {
 }
 
 /// ```rust
-/// # use timext::{MonthDuration, NumericMonthDuration};
+/// # use timext::{MonthDuration, ext::NumericMonthDuration};
 /// assert_eq!(1.months(), MonthDuration::months(1));
 /// assert_eq!(1.years(), MonthDuration::years(1));
 /// assert_eq!((-1).months(), MonthDuration::months(-1));
@@ -35,7 +35,7 @@ impl NumericMonthDuration for i32 {
 }
 
 /// ```rust
-/// # use timext::{MonthDuration, NumericMonthDuration};
+/// # use timext::{MonthDuration, ext::NumericMonthDuration};
 /// assert_eq!(1_u32.months(), MonthDuration::months(1));
 /// assert_eq!(1_u32.years(), MonthDuration::years(1));
 /// ```
