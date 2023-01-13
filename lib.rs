@@ -18,4 +18,6 @@ pub mod ext {
 
 mod duration;
 mod extensions;
+
+#[cfg(any(feature = "rand", feature = "serde"))]
 mod features;

@@ -2,9 +2,9 @@
 
 The collection of [time-rs/time](https://github.com/time-rs/time/) extensions:
 
-- Extends `time::Date`. `time::PrimitiveDateTime` and `time::OffsetDateTime` with
-  several methods to enable arithmetic operations related to months and years.
-  Additionally, attaches conversion methods to `i32`, `u32` and `f32` to improve
+- Extends `time::Date`. `time::PrimitiveDateTime` and `time::OffsetDateTime`
+  with several methods to enable arithmetic operations related to months and
+  years. Additionally, attaches conversion methods to `i64` and `f64` to improve
   ease of use.
 
 ```rust
