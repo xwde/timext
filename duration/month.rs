@@ -40,7 +40,7 @@ impl MonthDuration {
     /// Get the number of whole years in the duration.
     ///
     /// ```rust
-    /// # use time_monat::NumericMonthDuration;
+    /// # use timext::ext::NumericMonthDuration;
     /// assert_eq!(1.years().whole_years(), 1);
     /// assert_eq!((-1).years().whole_years(), -1);
     /// assert_eq!(6.months().whole_years(), 0);
@@ -53,7 +53,7 @@ impl MonthDuration {
     /// Get the number of whole months in the duration.
     ///
     /// ```rust
-    /// # use time_monat::NumericMonthDuration;
+    /// # use timext::ext::NumericMonthDuration;
     /// assert_eq!(1.months().whole_months(), 1);
     /// assert_eq!((-1).months().whole_months(), -1);
     /// assert_eq!(6.months().whole_years(), 0);
@@ -66,7 +66,7 @@ impl MonthDuration {
     /// Get the number of months past the number of whole years.
     ///
     /// ```rust
-    /// # use time_monat::NumericMonthDuration;
+    /// # use timext::ext::NumericMonthDuration;
     /// assert_eq!(13.months().subyear_months(), 1);
     /// assert_eq!((-13).months().subyear_months(), -1);
     /// ```
@@ -77,7 +77,7 @@ impl MonthDuration {
     /// Check if a duration is negative.
     ///
     /// ```rust
-    /// # use time_monat::NumericMonthDuration;
+    /// # use timext::ext::NumericMonthDuration;
     /// assert!(0.months().is_zero());
     /// assert!(!1.months().is_zero());
     /// ```
@@ -88,7 +88,7 @@ impl MonthDuration {
     /// Check if a duration is positive.
     ///
     /// ```rust
-    /// # use time_monat::NumericMonthDuration;
+    /// # use timext::ext::NumericMonthDuration;
     /// assert!(1.months().is_positive());
     /// assert!(!0.months().is_positive());
     /// assert!(!(-1).months().is_positive());
@@ -100,7 +100,7 @@ impl MonthDuration {
     /// Check if a duration is negative.
     ///
     /// ```rust
-    /// # use time_monat::NumericMonthDuration;
+    /// # use timext::ext::NumericMonthDuration;
     /// assert!((-1).months().is_negative());
     /// assert!(!0.months().is_negative());
     /// assert!(!1.months().is_negative());
@@ -154,7 +154,7 @@ impl MonthDuration {
     /// Computes `self + rhs`, returning `None` if an overflow occurred.
     ///
     /// ```rust
-    /// # use time_monat::{MonthDuration, NumericMonthDuration};
+    /// # use timext::{MonthDuration, ext::NumericMonthDuration};
     /// assert_eq!(5.months().checked_add(5.months()), Some(10.months()));
     /// assert_eq!(MonthDuration::MAX.checked_add(1.months()), None);
     /// assert_eq!((-5).months().checked_add(5.months()), Some(0.months()));
@@ -167,7 +167,7 @@ impl MonthDuration {
     /// Computes `self - rhs`, returning `None` if an overflow occurred.
     ///
     /// ```rust
-    /// # use time_monat::{MonthDuration, NumericMonthDuration};
+    /// # use timext::{MonthDuration, ext::NumericMonthDuration};
     /// assert_eq!(5.months().checked_sub(5.months()), Some(0.months()));
     /// assert_eq!(MonthDuration::MIN.checked_sub(1.months()), None);
     /// assert_eq!(5.months().checked_sub(5.months()), Some(0.months()));
@@ -180,7 +180,7 @@ impl MonthDuration {
     /// Computes `self * rhs`, returning `None` if an overflow occurred.
     ///
     /// ```rust
-    /// # use time_monat::{MonthDuration, NumericMonthDuration};
+    /// # use timext::{MonthDuration, ext::NumericMonthDuration};
     /// assert_eq!(5.months().checked_mul(2), Some(10.months()));
     /// assert_eq!(5.months().checked_mul(-2), Some((-10).months()));
     /// assert_eq!(5.months().checked_mul(0), Some(0.months()));
@@ -195,7 +195,7 @@ impl MonthDuration {
     /// Computes `self / rhs`, returning `None` if `rhs == 0` or if the result would overflow.
     ///
     /// ```rust
-    /// # use time_monat::NumericMonthDuration;
+    /// # use timext::ext::NumericMonthDuration;
     /// assert_eq!(10.months().checked_div(2), Some(5.months()));
     /// assert_eq!(10.months().checked_div(-2), Some((-5).months()));
     /// assert_eq!(1.months().checked_div(0), None);
@@ -208,7 +208,7 @@ impl MonthDuration {
     /// Computes `-self`, returning `None` if an overflow occurred.
     ///
     /// ```rust
-    /// # use time_monat::{MonthDuration, NumericMonthDuration};
+    /// # use timext::{MonthDuration, ext::NumericMonthDuration};
     /// assert_eq!(10.months().checked_neg(), Some((-10).months()));
     /// assert_eq!(MonthDuration::MIN.checked_neg(), None);
     /// ```
@@ -287,6 +287,8 @@ impl Neg for MonthDuration {
             .expect("overflow when negating MonthDuration")
     }
 }
+
+// TODO add arithmetic for f32/f64
 
 macro_rules! impl_div_mul_md {
     ($($t:ty),+) => {$(

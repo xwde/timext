@@ -2,7 +2,7 @@ use std::ops::{Add, AddAssign, Sub, SubAssign};
 
 use time::{Date, OffsetDateTime, PrimitiveDateTime};
 
-use crate::duration::MonthDuration;
+use crate::MonthDuration;
 
 /// Sealed trait to prevent downstream implementations.
 mod sealed {
@@ -190,7 +190,7 @@ mod tests {
     use time::Date;
     use time::Month::*;
 
-    use crate::{MonthDuration, MonthExtension};
+    use crate::{ext::MonthExtension, MonthDuration};
 
     #[test]
     fn sub_one() {
