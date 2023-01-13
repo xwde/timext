@@ -1,4 +1,4 @@
-use std::fmt::{Display, Formatter};
+use std::fmt::{Display, Formatter, Result as FmtResult};
 use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
 use time::util::days_in_year_month;
@@ -160,8 +160,7 @@ impl MonthDuration {
     /// assert_eq!((-5).months().checked_add(5.months()), Some(0.months()));
     /// ```
     pub fn checked_add(self, rhs: Self) -> Option<Self> {
-        let months = self.months.checked_add(rhs.months)?;
-        Some(Self { months })
+        self.months.checked_add(rhs.months).map(Self::months)
     }
 
     /// Computes `self - rhs`, returning `None` if an overflow occurred.
@@ -173,8 +172,7 @@ impl MonthDuration {
     /// assert_eq!(5.months().checked_sub(5.months()), Some(0.months()));
     /// ```
     pub fn checked_sub(self, rhs: Self) -> Option<Self> {
-        let months = self.months.checked_sub(rhs.months)?;
-        Some(Self { months })
+        self.months.checked_sub(rhs.months).map(Self::months)
     }
 
     /// Computes `self * rhs`, returning `None` if an overflow occurred.
@@ -188,8 +186,7 @@ impl MonthDuration {
     /// assert_eq!(MonthDuration::MIN.checked_mul(2), None);
     /// ```
     pub fn checked_mul(self, rhs: i32) -> Option<Self> {
-        let months = self.months.checked_mul(rhs)?;
-        Some(Self { months })
+        self.months.checked_mul(rhs).map(Self::months)
     }
 
     /// Computes `self / rhs`, returning `None` if `rhs == 0` or if the result would overflow.
@@ -201,8 +198,7 @@ impl MonthDuration {
     /// assert_eq!(1.months().checked_div(0), None);
     /// ```
     pub fn checked_div(self, rhs: i32) -> Option<Self> {
-        let months = self.months.checked_div(rhs)?;
-        Some(Self { months })
+        self.months.checked_div(rhs).map(Self::months)
     }
 
     /// Computes `-self`, returning `None` if an overflow occurred.
@@ -213,39 +209,24 @@ impl MonthDuration {
     /// assert_eq!(MonthDuration::MIN.checked_neg(), None);
     /// ```
     pub fn checked_neg(self) -> Option<Self> {
-        let months = self.months.checked_neg()?;
-        Some(Self { months })
+        self.months.checked_neg().map(Self::months)
     }
 }
 
 impl Display for MonthDuration {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         if self.is_negative() {
             f.write_str("-")?;
         }
 
-        if f.precision().is_some() {
-            if self.is_zero() {
-                return (0.).fmt(f).and_then(|_| f.write_str("mo"));
-            }
-
-            if self.whole_years() >= 1 {
-                return self.whole_years().fmt(f).and_then(|_| f.write_str("y"));
-            }
-
-            if self.whole_months() >= 1 {
-                return self.whole_months().fmt(f).and_then(|_| f.write_str("mo"));
-            }
-        } else {
-            if self.is_zero() {
-                return f.write_str("0mo");
-            }
-
-            self.whole_years().fmt(f).and_then(|_| f.write_str("y"))?;
-            self.whole_months().fmt(f).and_then(|_| f.write_str("mo"))?;
-        }
-
-        Ok(())
+        let years = self.abs().whole_years();
+        let months = self.abs().subyear_months();
+        return match (self.is_zero(), years, months) {
+            (true, _, _) => (0.).fmt(f).and_then(|_| f.write_str("mo")),
+            (_, y, _) if y.is_positive() => y.fmt(f).and_then(|_| f.write_str("y")),
+            (_, _, m) if m.is_positive() => m.fmt(f).and_then(|_| f.write_str("mo")),
+            (_, _, _) => unreachable!(),
+        };
     }
 }
 

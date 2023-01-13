@@ -5,11 +5,9 @@ mod sealed {
     /// A trait that cannot be implemented by downstream users.
     pub trait Sealed {}
 
-    impl Sealed for i32 {}
+    impl Sealed for i64 {}
 
-    impl Sealed for u32 {}
-
-    // impl Sealed for f32 {}
+    // impl Sealed for f64 {}
 }
 
 pub trait NumericMonthDuration: sealed::Sealed {
@@ -18,33 +16,19 @@ pub trait NumericMonthDuration: sealed::Sealed {
 }
 
 /// ```rust
+/// # use time::Duration;
 /// # use timext::{MonthDuration, ext::NumericMonthDuration};
 /// assert_eq!(1.months(), MonthDuration::months(1));
 /// assert_eq!(1.years(), MonthDuration::years(1));
 /// assert_eq!((-1).months(), MonthDuration::months(-1));
 /// assert_eq!((-1).years(), MonthDuration::years(-1));
 /// ```
-impl NumericMonthDuration for i32 {
+impl NumericMonthDuration for i64 {
     fn months(self) -> MonthDuration {
-        MonthDuration::months(self)
+        MonthDuration::months(self as i32)
     }
 
     fn years(self) -> MonthDuration {
-        MonthDuration::years(self)
-    }
-}
-
-/// ```rust
-/// # use timext::{MonthDuration, ext::NumericMonthDuration};
-/// assert_eq!(1_u32.months(), MonthDuration::months(1));
-/// assert_eq!(1_u32.years(), MonthDuration::years(1));
-/// ```
-impl NumericMonthDuration for u32 {
-    fn months(self) -> MonthDuration {
-        (self as i32).months()
-    }
-
-    fn years(self) -> MonthDuration {
-        (self as i32).years()
+        MonthDuration::years(self as i32)
     }
 }
