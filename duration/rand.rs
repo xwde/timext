@@ -1,7 +1,7 @@
 use rand::distributions::{Distribution, Standard};
 use rand::Rng;
 
-use crate::duration::MonthDuration;
+use crate::MonthDuration;
 
 impl Distribution<MonthDuration> for Standard {
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> MonthDuration {

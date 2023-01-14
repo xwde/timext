@@ -1,6 +1,8 @@
 ### timext
 
-The collection of [time-rs/time](https://github.com/time-rs/time/) extensions:
+The collection of [time-rs/time](https://github.com/time-rs/time/) extensions
+for imprecise time, incomplete formats and other things `time` crate is not
+intended for:
 
 - Extends `time::Date`. `time::PrimitiveDateTime` and `time::OffsetDateTime`
   with several methods to enable arithmetic operations related to months and

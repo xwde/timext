@@ -11,6 +11,8 @@ path = "./lib.rs"
 [features]
 serde = ["dep:serde"]
 rand = ["dep:rand"]
+parsing = ["time/parsing", "time/macros"]
+formatting = []
 
 [dependencies]
 time = "0.3.17"

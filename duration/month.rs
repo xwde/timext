@@ -15,16 +15,16 @@ impl MonthDuration {
     pub const fn new(years: i32, months: i32) -> Self {
         let months = years
             .checked_mul(12)
-            .expect("overflow constructing `time-monat::MonthDuration`")
+            .expect("overflow constructing `timext::MonthDuration`")
             .checked_add(months)
-            .expect("overflow constructing `time-monat::MonthDuration`");
+            .expect("overflow constructing `timext::MonthDuration`");
         Self { months }
     }
 
     pub const fn years(years: i32) -> Self {
         let months = years
             .checked_mul(12)
-            .expect("overflow constructing `time-monat::MonthDuration`");
+            .expect("overflow constructing `timext::MonthDuration`");
         Self { months }
     }
 
@@ -221,12 +221,12 @@ impl Display for MonthDuration {
 
         let years = self.abs().whole_years();
         let months = self.abs().subyear_months();
-        return match (self.is_zero(), years, months) {
+        match (self.is_zero(), years, months) {
             (true, _, _) => (0.).fmt(f).and_then(|_| f.write_str("mo")),
             (_, y, _) if y.is_positive() => y.fmt(f).and_then(|_| f.write_str("y")),
             (_, _, m) if m.is_positive() => m.fmt(f).and_then(|_| f.write_str("mo")),
             (_, _, _) => unreachable!(),
-        };
+        }
     }
 }
 
@@ -235,7 +235,7 @@ impl Add for MonthDuration {
 
     fn add(self, rhs: Self) -> Self::Output {
         self.checked_add(rhs)
-            .expect("overflow when adding MonthDuration")
+            .expect("overflow when adding timext::MonthDuration")
     }
 }
 
@@ -250,7 +250,7 @@ impl Sub for MonthDuration {
 
     fn sub(self, rhs: Self) -> Self::Output {
         self.checked_sub(rhs)
-            .expect("overflow when subtracting MonthDuration")
+            .expect("overflow when subtracting timext::MonthDuration")
     }
 }
 
@@ -265,20 +265,20 @@ impl Neg for MonthDuration {
 
     fn neg(self) -> Self::Output {
         self.checked_neg()
-            .expect("overflow when negating MonthDuration")
+            .expect("overflow when negating timext::MonthDuration")
     }
 }
 
 // TODO add arithmetic for f32/f64
 
-macro_rules! impl_div_mul_md {
+macro_rules! impl_md {
     ($($t:ty),+) => {$(
         impl Div<$t> for MonthDuration {
             type Output = Self;
 
             fn div(self, rhs: $t) -> Self::Output {
                 self.checked_div(rhs as i32)
-                    .expect("overflow when dividing MonthDuration")
+                    .expect("overflow when dividing timext::MonthDuration")
             }
         }
 
@@ -293,7 +293,7 @@ macro_rules! impl_div_mul_md {
 
             fn mul(self, rhs: $t) -> Self::Output {
                 self.checked_mul(rhs as i32)
-                    .expect("overflow when multiplying MonthDuration")
+                    .expect("overflow when multiplying timext::MonthDuration")
             }
         }
 
@@ -313,4 +313,4 @@ macro_rules! impl_div_mul_md {
     )+};
 }
 
-impl_div_mul_md![i8, i16, i32, u8, u16, u32];
+impl_md![i8, i16, i32, u8, u16, u32];

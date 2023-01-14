@@ -7,7 +7,7 @@ mod sealed {
 
     impl Sealed for i64 {}
 
-    // impl Sealed for f64 {}
+    impl Sealed for f64 {}
 }
 
 pub trait NumericMonthDuration: sealed::Sealed {
@@ -30,5 +30,15 @@ impl NumericMonthDuration for i64 {
 
     fn years(self) -> MonthDuration {
         MonthDuration::years(self as i32)
+    }
+}
+
+impl NumericMonthDuration for f64 {
+    fn months(self) -> MonthDuration {
+        todo!()
+    }
+
+    fn years(self) -> MonthDuration {
+        todo!()
     }
 }
