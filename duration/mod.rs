@@ -1,8 +1,3 @@
-pub use month::MonthDuration;
-
-mod month;
-
-#[cfg(feature = "rand")]
-mod rand;
-#[cfg(feature = "serde")]
-mod serde;
+pub mod extension;
+pub mod feature;
+pub mod month;

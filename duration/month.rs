@@ -5,7 +5,7 @@ use time::util::days_in_year_month;
 use time::{Date, Month};
 
 // TODO Represent fraction of week with opt f32?
-// see https://github.com/martsokha/timext/issues/6
+// see https://github.com/xwde/timext/issues/6
 #[derive(Clone, Copy, Default, PartialEq, Eq, Hash, PartialOrd, Ord, Debug)]
 pub struct MonthDuration {
     months: i32,

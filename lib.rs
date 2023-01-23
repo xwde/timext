@@ -2,17 +2,21 @@
 #![feature(const_option)]
 
 // TODO Make everything const
-// see https://github.com/martsokha/timext/issues/2
+// see https://github.com/xwde/timext/issues/2
 
-pub use duration::MonthDuration;
+pub use duration::month::MonthDuration;
+pub use incomplete::IncompleteDate;
+pub use incomplete::IncompleteOffsetDateTime;
+pub use incomplete::IncompletePrimitiveDateTime;
+pub use incomplete::IncompleteTime;
 
 pub mod ext {
-    pub use crate::extensions::MonthExtension;
-    pub use crate::extensions::NumericMonthDuration;
+    pub use crate::duration::extension::MonthExtension;
+    pub use crate::duration::extension::NumericMonthDuration;
 }
 
 mod duration;
-mod extensions;
+mod incomplete;
 
 // use time::format_description::well_known::Iso8601;
 // pub mod format_description {
