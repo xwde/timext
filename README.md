@@ -29,5 +29,14 @@ fn main() {
   or `1998-08 14:xx`.
 
 ```rust
-fn main() {}
+use time::{Date, Month};
+use timext::IncompleteDate;
+
+fn main() {
+    let d0 = Date::from_calendar_date(2023, Month::January, 28).unwrap();
+    let d1 = IncompleteDate::from_calendar_date(None, None, Some(28)).unwrap();
+    let d1 = d1.replace_year(Some(2023)).unwrap();
+    let d1 = d1.replace_month(Some(Month::January)).unwrap();
+    assert_eq!(d0, d1.into_complete().unwrap());
+}
 ```

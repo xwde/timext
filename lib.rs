@@ -4,15 +4,15 @@
 // TODO Make everything const
 // see https://github.com/xwde/timext/issues/2
 
-pub use duration::month::MonthDuration;
+pub use duration::MonthDuration;
 pub use incomplete::IncompleteDate;
 pub use incomplete::IncompleteOffsetDateTime;
 pub use incomplete::IncompletePrimitiveDateTime;
 pub use incomplete::IncompleteTime;
 
 pub mod ext {
-    pub use crate::duration::extension::MonthExtension;
-    pub use crate::duration::extension::NumericMonthDuration;
+    pub use crate::duration::MonthExtension;
+    pub use crate::duration::NumericMonthDuration;
 }
 
 mod duration;

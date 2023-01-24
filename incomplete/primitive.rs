@@ -5,3 +5,9 @@ pub struct IncompletePrimitiveDateTime {
     date: IncompleteDate,
     time: IncompleteTime,
 }
+
+impl IncompletePrimitiveDateTime {
+    pub fn new(date: IncompleteDate, time: IncompleteTime) -> Self {
+        Self { date, time }
+    }
+}

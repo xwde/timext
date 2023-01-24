@@ -34,7 +34,7 @@ impl IncompleteTime {
         second: Option<u8>,
         microsecond: Option<u32>,
     ) -> Result<Self, ComponentRange> {
-        let nanosecond = microsecond.map(|ms| ms as u32 * 1_000);
+        let nanosecond = microsecond.map(|ms| ms * 1_000);
         Self::from_hms_nano(hour, minute, second, nanosecond)
     }
 
@@ -71,22 +71,6 @@ impl IncompleteTime {
 
     pub fn into_complete(self) -> Result<Time, ComponentRange> {
         todo!()
-    }
-
-    pub fn as_hms(self) -> (Option<u8>, Option<u8>, Option<u8>) {
-        (self.hour, self.minute, self.second)
-    }
-
-    pub fn as_hms_milli(self) -> (Option<u8>, Option<u8>, Option<u8>, Option<u16>) {
-        (self.hour, self.minute, self.second, self.millisecond())
-    }
-
-    pub fn as_hms_micro(self) -> (Option<u8>, Option<u8>, Option<u8>, Option<u32>) {
-        (self.hour, self.minute, self.second, self.microsecond())
-    }
-
-    pub fn as_hms_nano(self) -> (Option<u8>, Option<u8>, Option<u8>, Option<u32>) {
-        (self.hour, self.minute, self.second, self.nanosecond)
     }
 
     pub fn with_fallback(self, fallback: Time) -> Result<Self, ComponentRange> {

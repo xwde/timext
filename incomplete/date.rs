@@ -1,5 +1,5 @@
-use time::{Date, Month, Time, Weekday};
 use time::error::ComponentRange;
+use time::{Date, Month, Time, Weekday};
 
 use crate::{IncompletePrimitiveDateTime, IncompleteTime};
 
@@ -39,15 +39,11 @@ impl IncompleteDate {
     }
 
     pub fn with_time(self, time: Time) -> IncompletePrimitiveDateTime {
-        todo!()
+        self.with_incomplete_time(time.into())
     }
 
     pub fn with_incomplete_time(self, time: IncompleteTime) -> IncompletePrimitiveDateTime {
-        todo!()
-    }
-
-    pub fn with_hms(self) -> IncompletePrimitiveDateTime {
-        todo!()
+        IncompletePrimitiveDateTime::new(self, time)
     }
 
     pub fn with_fallback(self, fallback: Time) -> Result<Self, ComponentRange> {
