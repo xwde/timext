@@ -6,17 +6,7 @@ pub struct IncompleteTime {
     hour: Option<u8>,
     minute: Option<u8>,
     second: Option<u8>,
-    nanoseconds: Option<u32>,
-}
-
-impl IncompleteTime {
-    pub fn into_time(self, complete: Time) -> Result<Time, ComponentRange> {
-        let h = self.hour.unwrap_or(complete.hour());
-        let m = self.minute.unwrap_or(complete.minute());
-        let s = self.second.unwrap_or(complete.second());
-        let ns = self.nanoseconds.unwrap_or(complete.nanosecond());
-        Time::from_hms_nano(h, m, s, ns)
-    }
+    nanosecond: Option<u32>,
 }
 
 impl IncompleteTime {
@@ -25,7 +15,7 @@ impl IncompleteTime {
         minute: Option<u8>,
         second: Option<u8>,
     ) -> Result<Self, ComponentRange> {
-        todo!()
+        Self::from_hms_nano(hour, minute, second, None)
     }
 
     pub fn from_hms_milli(
@@ -34,7 +24,8 @@ impl IncompleteTime {
         second: Option<u8>,
         millisecond: Option<u16>,
     ) -> Result<Self, ComponentRange> {
-        todo!()
+        let nanosecond = millisecond.map(|ms| ms as u32 * 1_000_000);
+        Self::from_hms_nano(hour, minute, second, nanosecond)
     }
 
     pub fn from_hms_micro(
@@ -43,7 +34,8 @@ impl IncompleteTime {
         second: Option<u8>,
         microsecond: Option<u32>,
     ) -> Result<Self, ComponentRange> {
-        todo!()
+        let nanosecond = microsecond.map(|ms| ms as u32 * 1_000);
+        Self::from_hms_nano(hour, minute, second, nanosecond)
     }
 
     pub fn from_hms_nano(
@@ -54,9 +46,33 @@ impl IncompleteTime {
     ) -> Result<Self, ComponentRange> {
         todo!()
     }
-}
 
-impl IncompleteTime {
+    pub fn from_hms_nano_unchecked(
+        hour: Option<u8>,
+        minute: Option<u8>,
+        second: Option<u8>,
+        nanosecond: Option<u32>,
+    ) -> Self {
+        Self {
+            hour,
+            minute,
+            second,
+            nanosecond,
+        }
+    }
+
+    pub fn from_complete(time: Time) -> Self {
+        let h = Some(time.hour());
+        let m = Some(time.minute());
+        let s = Some(time.second());
+        let n = Some(time.nanosecond());
+        Self::from_hms_nano_unchecked(h, m, s, n)
+    }
+
+    pub fn into_complete(self) -> Result<Time, ComponentRange> {
+        todo!()
+    }
+
     pub fn as_hms(self) -> (Option<u8>, Option<u8>, Option<u8>) {
         (self.hour, self.minute, self.second)
     }
@@ -70,11 +86,17 @@ impl IncompleteTime {
     }
 
     pub fn as_hms_nano(self) -> (Option<u8>, Option<u8>, Option<u8>, Option<u32>) {
-        (self.hour, self.minute, self.second, self.nanoseconds)
+        (self.hour, self.minute, self.second, self.nanosecond)
     }
-}
 
-impl IncompleteTime {
+    pub fn with_fallback(self, fallback: Time) -> Result<Self, ComponentRange> {
+        let h = Some(self.hour.unwrap_or(fallback.hour()));
+        let m = Some(self.minute.unwrap_or(fallback.minute()));
+        let s = Some(self.second.unwrap_or(fallback.second()));
+        let n = Some(self.nanosecond.unwrap_or(fallback.nanosecond()));
+        Ok(Self::from_hms_nano_unchecked(h, m, s, n))
+    }
+
     pub fn hour(self) -> Option<u8> {
         self.hour
     }
@@ -88,40 +110,54 @@ impl IncompleteTime {
     }
 
     pub fn millisecond(self) -> Option<u16> {
-        self.nanoseconds.map(|ns| (ns / 1_000_000) as _)
+        self.nanosecond.map(|ns| (ns / 1_000_000) as _)
     }
 
     pub fn microsecond(self) -> Option<u32> {
-        self.nanoseconds.map(|ns| (ns / 1_000) as _)
+        self.nanosecond.map(|ns| (ns / 1_000) as _)
     }
 
     pub fn nanosecond(self) -> Option<u32> {
-        self.nanoseconds
+        self.nanosecond
     }
-}
 
-impl IncompleteTime {
     pub fn replace_hour(self, hour: Option<u8>) -> Result<Self, ComponentRange> {
-        todo!()
+        Self::from_hms_nano(hour, self.minute, self.minute, self.nanosecond)
     }
 
     pub fn replace_minute(self, minute: Option<u8>) -> Result<Self, ComponentRange> {
-        todo!()
+        Self::from_hms_nano(self.hour, minute, self.minute, self.nanosecond)
     }
 
     pub fn replace_second(self, second: Option<u8>) -> Result<Self, ComponentRange> {
-        todo!()
+        Self::from_hms_nano(self.hour, self.minute, second, self.nanosecond)
     }
 
     pub fn replace_millisecond(self, millisecond: Option<u16>) -> Result<Self, ComponentRange> {
-        todo!()
+        let nanosecond = millisecond.map(|ms| ms as u32 * 1_000_000);
+        Self::from_hms_nano(self.hour, self.minute, self.minute, nanosecond)
     }
 
     pub fn replace_microsecond(self, microsecond: Option<u32>) -> Result<Self, ComponentRange> {
-        todo!()
+        let nanosecond = microsecond.map(|ms| ms * 1_000);
+        Self::from_hms_nano(self.hour, self.minute, self.minute, nanosecond)
     }
 
     pub fn replace_nanosecond(self, nanosecond: Option<u32>) -> Result<Self, ComponentRange> {
-        todo!()
+        Self::from_hms_nano(self.hour, self.minute, self.minute, nanosecond)
+    }
+}
+
+impl From<Time> for IncompleteTime {
+    fn from(time: Time) -> Self {
+        Self::from_complete(time)
+    }
+}
+
+impl TryFrom<IncompleteTime> for Time {
+    type Error = ComponentRange;
+
+    fn try_from(time: IncompleteTime) -> Result<Self, Self::Error> {
+        time.into_complete()
     }
 }

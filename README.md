@@ -25,7 +25,7 @@ fn main() {
 ```
 
 - Implements its own time types, that are roughly compatible with original types
-  and allow incomplete or partial time formats e.g. `xx:24:xx.845` `1998-xx-02`
+  and allow incomplete or partial time formats e.g. `xx:24:xx.845`, `1998-xx-02`
   or `1998-08 14:xx`.
 
 ```rust
