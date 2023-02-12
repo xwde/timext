@@ -7,24 +7,24 @@ use time::{Date, Month};
 // TODO Represent fraction of week with opt f32?
 // see https://github.com/xwde/timext/issues/6
 #[derive(Clone, Copy, Default, PartialEq, Eq, Hash, PartialOrd, Ord, Debug)]
-pub struct MonthDuration {
+pub struct CalendarDuration {
     months: i32,
 }
 
-impl MonthDuration {
+impl CalendarDuration {
     pub const fn new(years: i32, months: i32) -> Self {
         let months = years
             .checked_mul(12)
-            .expect("overflow constructing `timext::MonthDuration`")
+            .expect("overflow constructing `timext::CalendarDuration`")
             .checked_add(months)
-            .expect("overflow constructing `timext::MonthDuration`");
+            .expect("overflow constructing `timext::CalendarDuration`");
         Self { months }
     }
 
     pub const fn years(years: i32) -> Self {
         let months = years
             .checked_mul(12)
-            .expect("overflow constructing `timext::MonthDuration`");
+            .expect("overflow constructing `timext::CalendarDuration`");
         Self { months }
     }
 
@@ -36,11 +36,11 @@ impl MonthDuration {
     pub const MAX: Self = Self::months(i32::MAX);
 }
 
-impl MonthDuration {
+impl CalendarDuration {
     /// Get the number of whole years in the duration.
     ///
     /// ```rust
-    /// # use timext::ext::NumericMonthDuration;
+    /// # use timext::ext::NumericCalendarDuration;
     /// assert_eq!(1.years().whole_years(), 1);
     /// assert_eq!((-1).years().whole_years(), -1);
     /// assert_eq!(6.months().whole_years(), 0);
@@ -53,7 +53,7 @@ impl MonthDuration {
     /// Get the number of whole months in the duration.
     ///
     /// ```rust
-    /// # use timext::ext::NumericMonthDuration;
+    /// # use timext::ext::NumericCalendarDuration;
     /// assert_eq!(1.months().whole_months(), 1);
     /// assert_eq!((-1).months().whole_months(), -1);
     /// assert_eq!(6.months().whole_years(), 0);
@@ -66,7 +66,7 @@ impl MonthDuration {
     /// Get the number of months past the number of whole years.
     ///
     /// ```rust
-    /// # use timext::ext::NumericMonthDuration;
+    /// # use timext::ext::NumericCalendarDuration;
     /// assert_eq!(13.months().subyear_months(), 1);
     /// assert_eq!((-13).months().subyear_months(), -1);
     /// ```
@@ -77,7 +77,7 @@ impl MonthDuration {
     /// Check if a duration is negative.
     ///
     /// ```rust
-    /// # use timext::ext::NumericMonthDuration;
+    /// # use timext::ext::NumericCalendarDuration;
     /// assert!(0.months().is_zero());
     /// assert!(!1.months().is_zero());
     /// ```
@@ -88,7 +88,7 @@ impl MonthDuration {
     /// Check if a duration is positive.
     ///
     /// ```rust
-    /// # use timext::ext::NumericMonthDuration;
+    /// # use timext::ext::NumericCalendarDuration;
     /// assert!(1.months().is_positive());
     /// assert!(!0.months().is_positive());
     /// assert!(!(-1).months().is_positive());
@@ -100,7 +100,7 @@ impl MonthDuration {
     /// Check if a duration is negative.
     ///
     /// ```rust
-    /// # use timext::ext::NumericMonthDuration;
+    /// # use timext::ext::NumericCalendarDuration;
     /// assert!((-1).months().is_negative());
     /// assert!(!0.months().is_negative());
     /// assert!(!1.months().is_negative());
@@ -110,7 +110,7 @@ impl MonthDuration {
     }
 }
 
-impl MonthDuration {
+impl CalendarDuration {
     pub const fn abs(self) -> Self {
         Self::months(self.whole_months().abs())
     }
@@ -150,13 +150,13 @@ impl MonthDuration {
     }
 }
 
-impl MonthDuration {
+impl CalendarDuration {
     /// Computes `self + rhs`, returning `None` if an overflow occurred.
     ///
     /// ```rust
-    /// # use timext::{MonthDuration, ext::NumericMonthDuration};
+    /// # use timext::{CalendarDuration, ext::NumericCalendarDuration};
     /// assert_eq!(5.months().checked_add(5.months()), Some(10.months()));
-    /// assert_eq!(MonthDuration::MAX.checked_add(1.months()), None);
+    /// assert_eq!(CalendarDuration::MAX.checked_add(1.months()), None);
     /// assert_eq!((-5).months().checked_add(5.months()), Some(0.months()));
     /// ```
     pub fn checked_add(self, rhs: Self) -> Option<Self> {
@@ -166,9 +166,9 @@ impl MonthDuration {
     /// Computes `self - rhs`, returning `None` if an overflow occurred.
     ///
     /// ```rust
-    /// # use timext::{MonthDuration, ext::NumericMonthDuration};
+    /// # use timext::{CalendarDuration, ext::NumericCalendarDuration};
     /// assert_eq!(5.months().checked_sub(5.months()), Some(0.months()));
-    /// assert_eq!(MonthDuration::MIN.checked_sub(1.months()), None);
+    /// assert_eq!(CalendarDuration::MIN.checked_sub(1.months()), None);
     /// assert_eq!(5.months().checked_sub(5.months()), Some(0.months()));
     /// ```
     pub fn checked_sub(self, rhs: Self) -> Option<Self> {
@@ -178,12 +178,12 @@ impl MonthDuration {
     /// Computes `self * rhs`, returning `None` if an overflow occurred.
     ///
     /// ```rust
-    /// # use timext::{MonthDuration, ext::NumericMonthDuration};
+    /// # use timext::{CalendarDuration, ext::NumericCalendarDuration};
     /// assert_eq!(5.months().checked_mul(2), Some(10.months()));
     /// assert_eq!(5.months().checked_mul(-2), Some((-10).months()));
     /// assert_eq!(5.months().checked_mul(0), Some(0.months()));
-    /// assert_eq!(MonthDuration::MAX.checked_mul(2), None);
-    /// assert_eq!(MonthDuration::MIN.checked_mul(2), None);
+    /// assert_eq!(CalendarDuration::MAX.checked_mul(2), None);
+    /// assert_eq!(CalendarDuration::MIN.checked_mul(2), None);
     /// ```
     pub fn checked_mul(self, rhs: i32) -> Option<Self> {
         self.months.checked_mul(rhs).map(Self::months)
@@ -192,7 +192,7 @@ impl MonthDuration {
     /// Computes `self / rhs`, returning `None` if `rhs == 0` or if the result would overflow.
     ///
     /// ```rust
-    /// # use timext::ext::NumericMonthDuration;
+    /// # use timext::ext::NumericCalendarDuration;
     /// assert_eq!(10.months().checked_div(2), Some(5.months()));
     /// assert_eq!(10.months().checked_div(-2), Some((-5).months()));
     /// assert_eq!(1.months().checked_div(0), None);
@@ -204,16 +204,16 @@ impl MonthDuration {
     /// Computes `-self`, returning `None` if an overflow occurred.
     ///
     /// ```rust
-    /// # use timext::{MonthDuration, ext::NumericMonthDuration};
+    /// # use timext::{CalendarDuration, ext::NumericCalendarDuration};
     /// assert_eq!(10.months().checked_neg(), Some((-10).months()));
-    /// assert_eq!(MonthDuration::MIN.checked_neg(), None);
+    /// assert_eq!(CalendarDuration::MIN.checked_neg(), None);
     /// ```
     pub fn checked_neg(self) -> Option<Self> {
         self.months.checked_neg().map(Self::months)
     }
 }
 
-impl Display for MonthDuration {
+impl Display for CalendarDuration {
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         if self.is_negative() {
             f.write_str("-")?;
@@ -230,42 +230,42 @@ impl Display for MonthDuration {
     }
 }
 
-impl Add for MonthDuration {
+impl Add for CalendarDuration {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
         self.checked_add(rhs)
-            .expect("overflow when adding timext::MonthDuration")
+            .expect("overflow when adding timext::CalendarDuration")
     }
 }
 
-impl AddAssign for MonthDuration {
+impl AddAssign for CalendarDuration {
     fn add_assign(&mut self, rhs: Self) {
         *self = *self + rhs
     }
 }
 
-impl Sub for MonthDuration {
+impl Sub for CalendarDuration {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
         self.checked_sub(rhs)
-            .expect("overflow when subtracting timext::MonthDuration")
+            .expect("overflow when subtracting timext::CalendarDuration")
     }
 }
 
-impl SubAssign for MonthDuration {
+impl SubAssign for CalendarDuration {
     fn sub_assign(&mut self, rhs: Self) {
         *self = *self - rhs
     }
 }
 
-impl Neg for MonthDuration {
+impl Neg for CalendarDuration {
     type Output = Self;
 
     fn neg(self) -> Self::Output {
         self.checked_neg()
-            .expect("overflow when negating timext::MonthDuration")
+            .expect("overflow when negating timext::CalendarDuration")
     }
 }
 
@@ -273,39 +273,39 @@ impl Neg for MonthDuration {
 
 macro_rules! impl_md {
     ($($t:ty),+) => {$(
-        impl Div<$t> for MonthDuration {
+        impl Div<$t> for CalendarDuration {
             type Output = Self;
 
             fn div(self, rhs: $t) -> Self::Output {
                 self.checked_div(rhs as i32)
-                    .expect("overflow when dividing timext::MonthDuration")
+                    .expect("overflow when dividing timext::CalendarDuration")
             }
         }
 
-        impl DivAssign<$t> for MonthDuration {
+        impl DivAssign<$t> for CalendarDuration {
             fn div_assign(&mut self, rhs: $t) {
                 *self = *self / rhs
             }
         }
 
-        impl Mul<$t> for MonthDuration {
+        impl Mul<$t> for CalendarDuration {
             type Output = Self;
 
             fn mul(self, rhs: $t) -> Self::Output {
                 self.checked_mul(rhs as i32)
-                    .expect("overflow when multiplying timext::MonthDuration")
+                    .expect("overflow when multiplying timext::CalendarDuration")
             }
         }
 
-        impl Mul<MonthDuration> for $t {
-            type Output = MonthDuration;
+        impl Mul<CalendarDuration> for $t {
+            type Output = CalendarDuration;
 
-            fn mul(self, rhs: MonthDuration) -> Self::Output {
+            fn mul(self, rhs: CalendarDuration) -> Self::Output {
                 rhs * self
             }
         }
 
-        impl MulAssign<$t> for MonthDuration {
+        impl MulAssign<$t> for CalendarDuration {
             fn mul_assign(&mut self, rhs: $t) {
                 *self = *self * rhs
             }

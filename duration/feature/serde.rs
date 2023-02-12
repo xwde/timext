@@ -3,9 +3,9 @@ use std::fmt::Formatter;
 use serde::de::{Error, Visitor};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
-use crate::MonthDuration;
+use crate::CalendarDuration;
 
-impl Serialize for MonthDuration {
+impl Serialize for CalendarDuration {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -17,7 +17,7 @@ impl Serialize for MonthDuration {
 struct MonthDurationVisitor;
 
 impl<'de> Visitor<'de> for MonthDurationVisitor {
-    type Value = MonthDuration;
+    type Value = CalendarDuration;
 
     fn expecting(&self, formatter: &mut Formatter<'_>) -> std::fmt::Result {
         formatter.write_str("a `MonthDuration`")
@@ -27,11 +27,11 @@ impl<'de> Visitor<'de> for MonthDurationVisitor {
     where
         E: Error,
     {
-        Ok(MonthDuration::months(v))
+        Ok(CalendarDuration::months(v))
     }
 }
 
-impl<'de> Deserialize<'de> for MonthDuration {
+impl<'de> Deserialize<'de> for CalendarDuration {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,

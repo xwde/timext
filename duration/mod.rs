@@ -1,12 +1,11 @@
-pub use date::MonthExtension;
-pub use ext::NumericMonthDuration;
-pub use month::MonthDuration;
-
-mod date;
-mod ext;
-mod month;
-
+pub use extension::CalendarExtension;
+pub use extension::NumericCalendarDuration;
 #[cfg(feature = "rand")]
-pub mod rand;
+pub use feature::rand::*;
 #[cfg(feature = "serde")]
-pub mod serde;
+pub use feature::serde::*;
+pub use month::CalendarDuration;
+
+mod extension;
+mod feature;
+mod month;
