@@ -1,17 +1,17 @@
 ### timext
 
 The collection of [time-rs/time](https://github.com/time-rs/time/) extensions
-for imprecise time, incomplete formats and other things `time` crate is not
-intended for.
+for calendar arithmetics, incomplete formats handling, imprecise time, and other
+things `time` crate is not intended for.
 
-- Extends `time::Date`, `time::PrimitiveDateTime`, and `time::OffsetDateTime`
-  with several methods to enable arithmetic operations related to months and
-  years. Additionally, attaches conversion methods to `i64` and `f64` to improve
-  ease of use.
+- Introduces `timext:CalendarDuration` and extends `time::Date`,
+  `time::PrimitiveDateTime`, and `time::OffsetDateTime` with several methods to
+  enable arithmetic operations related to months and years. Additionally,
+  attaches conversion methods to `i64` and `f64` to improve ease of use.
 
 ```rust
 use time::{Date, Month};
-use timext::ext::NumericMonthDuration;
+use timext::ext::NumericCalendarDuration;
 
 fn main() {
     let d0 = Date::from_calendar_date(2023, Month::January, 31).unwrap();
@@ -40,3 +40,5 @@ fn main() {
     assert_eq!(d0, d1.into_complete().unwrap());
 }
 ```
+
+#### Links
