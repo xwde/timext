@@ -1,4 +1,9 @@
 #[cfg(feature = "rand")]
-pub mod rand;
+pub use self::rand::*;
 #[cfg(feature = "serde")]
-pub mod serde;
+pub use self::serde::*;
+
+#[cfg(feature = "rand")]
+mod rand;
+#[cfg(feature = "serde")]
+mod serde;

@@ -1,8 +1,7 @@
-use time::error::ComponentRange;
 use time::{Month, PrimitiveDateTime, UtcOffset, Weekday};
 
-use crate::incomplete::Incomplete;
-use crate::{InDate, InOffsetDateTime, InTime};
+use crate::error::InComponentRange;
+use crate::{InCompleteTimeFormat, InDate, InOffsetDateTime, InTime};
 
 #[derive(Clone, Copy, Eq, PartialEq, Hash)]
 pub struct InPrimitiveDateTime {
@@ -67,57 +66,48 @@ impl InPrimitiveDateTime {
 }
 
 impl InPrimitiveDateTime {
-    pub fn replace_date(self, date: InDate) -> Result<Self, ComponentRange> {
-        Ok(date.with_incomplete_time(self.time))
+    pub fn replace_date(self, date: InDate) -> Result<Self, InComponentRange> {
+        Ok(date.with_time(self.time))
     }
 
-    pub fn replace_year(self, year: Option<i32>) -> Result<Self, ComponentRange> {
-        let date = self.date.replace_year(year)?;
-        Ok(date.with_incomplete_time(self.time))
+    pub fn replace_year(self, year: Option<i32>) -> Result<Self, InComponentRange> {
+        self.replace_date(self.date.replace_year(year)?)
     }
 
-    pub fn replace_month(self, month: Option<Month>) -> Result<Self, ComponentRange> {
-        let date = self.date.replace_month(month)?;
-        Ok(date.with_incomplete_time(self.time))
+    pub fn replace_month(self, month: Option<Month>) -> Result<Self, InComponentRange> {
+        self.replace_date(self.date.replace_month(month)?)
     }
 
-    pub fn replace_day(self, day: Option<u8>) -> Result<Self, ComponentRange> {
-        let date = self.date.replace_day(day)?;
-        Ok(date.with_incomplete_time(self.time))
+    pub fn replace_day(self, day: Option<u8>) -> Result<Self, InComponentRange> {
+        self.replace_date(self.date.replace_day(day)?)
     }
 
-    pub fn replace_time(self, time: InTime) -> Result<Self, ComponentRange> {
-        Ok(self.date.with_incomplete_time(time))
+    pub fn replace_time(self, time: InTime) -> Result<Self, InComponentRange> {
+        Ok(self.date.with_time(time))
     }
 
-    pub fn replace_hour(self, hour: Option<u8>) -> Result<Self, ComponentRange> {
-        let time = self.time.replace_hour(hour)?;
-        Ok(self.date().with_incomplete_time(time))
+    pub fn replace_hour(self, hour: Option<u8>) -> Result<Self, InComponentRange> {
+        self.replace_time(self.time.replace_hour(hour)?)
     }
 
-    pub fn replace_minute(self, minute: Option<u8>) -> Result<Self, ComponentRange> {
-        let time = self.time.replace_minute(minute)?;
-        Ok(self.date().with_incomplete_time(time))
+    pub fn replace_minute(self, minute: Option<u8>) -> Result<Self, InComponentRange> {
+        self.replace_time(self.time.replace_minute(minute)?)
     }
 
-    pub fn replace_second(self, second: Option<u8>) -> Result<Self, ComponentRange> {
-        let time = self.time.replace_second(second)?;
-        Ok(self.date().with_incomplete_time(time))
+    pub fn replace_second(self, second: Option<u8>) -> Result<Self, InComponentRange> {
+        self.replace_time(self.time.replace_second(second)?)
     }
 
-    pub fn replace_millisecond(self, millisecond: Option<u16>) -> Result<Self, ComponentRange> {
-        let time = self.time.replace_millisecond(millisecond)?;
-        Ok(self.date.with_incomplete_time(time))
+    pub fn replace_millisecond(self, millisecond: Option<u16>) -> Result<Self, InComponentRange> {
+        self.replace_time(self.time.replace_millisecond(millisecond)?)
     }
 
-    pub fn replace_microsecond(self, microsecond: Option<u32>) -> Result<Self, ComponentRange> {
-        let time = self.time.replace_microsecond(microsecond)?;
-        Ok(self.date.with_incomplete_time(time))
+    pub fn replace_microsecond(self, microsecond: Option<u32>) -> Result<Self, InComponentRange> {
+        self.replace_time(self.time.replace_microsecond(microsecond)?)
     }
 
-    pub fn replace_nanosecond(self, nanosecond: Option<u32>) -> Result<Self, ComponentRange> {
-        let time = self.time.replace_nanosecond(nanosecond)?;
-        Ok(self.date.with_incomplete_time(time))
+    pub fn replace_nanosecond(self, nanosecond: Option<u32>) -> Result<Self, InComponentRange> {
+        self.replace_time(self.time.replace_nanosecond(nanosecond)?)
     }
 }
 
@@ -131,7 +121,7 @@ impl InPrimitiveDateTime {
     }
 }
 
-impl Incomplete for InPrimitiveDateTime {
+impl InCompleteTimeFormat for InPrimitiveDateTime {
     type Complete = PrimitiveDateTime;
 
     fn from_complete(complete: Self::Complete) -> Self {
@@ -140,13 +130,13 @@ impl Incomplete for InPrimitiveDateTime {
         Self::new(d, t)
     }
 
-    fn into_complete(self) -> Result<Self::Complete, ComponentRange> {
+    fn into_complete(self) -> Result<Self::Complete, InComponentRange> {
         let d = self.date.into_complete()?;
         let t = self.time.into_complete()?;
         Ok(Self::Complete::new(d, t))
     }
 
-    fn with_fallback(self, fallback: Self::Complete) -> Result<Self, ComponentRange> {
+    fn with_fallback(self, fallback: Self::Complete) -> Result<Self, InComponentRange> {
         let d = self.date.with_fallback(fallback.date())?;
         let t = self.time.with_fallback(fallback.time())?;
         Ok(Self::new(d, t))
@@ -155,14 +145,14 @@ impl Incomplete for InPrimitiveDateTime {
 
 impl From<PrimitiveDateTime> for InPrimitiveDateTime {
     fn from(datetime: PrimitiveDateTime) -> Self {
-        todo!()
+        Self::from_complete(datetime)
     }
 }
 
 impl TryFrom<InPrimitiveDateTime> for PrimitiveDateTime {
-    type Error = ComponentRange;
+    type Error = InComponentRange;
 
     fn try_from(datetime: InPrimitiveDateTime) -> Result<Self, Self::Error> {
-        todo!()
+        datetime.into_complete()
     }
 }

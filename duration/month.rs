@@ -4,14 +4,36 @@ use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssi
 use time::util::days_in_year_month;
 use time::{Date, Month};
 
-// TODO Represent fraction of week with opt f32?
-// see https://github.com/xwde/timext/issues/6
+/// TODO Represent fraction of week with opt f32
+/// see https://github.com/xwde/timext/issues/6
+///
+/// ```rust
+/// # use time::{Date, Month};
+/// # use timext::ext::NumericCalendarDuration;
+///
+/// let d0 = Date::from_calendar_date(2023, Month::January, 31).unwrap();
+/// let d1 = Date::from_calendar_date(2023, Month::February, 28).unwrap();
+/// assert_eq!(d0 + 1.months(), d1);
+///
+/// let d0 = Date::from_calendar_date(2024, Month::February, 29).unwrap();
+/// let d1 = Date::from_calendar_date(2025, Month::February, 28).unwrap();///
+/// assert_eq!(d0 + 1.years(), d1);
+/// ```
 #[derive(Clone, Copy, Default, PartialEq, Eq, Hash, PartialOrd, Ord, Debug)]
 pub struct CalendarDuration {
     months: i32,
 }
 
 impl CalendarDuration {
+    /// Creates a new `CalendarDuration` with provided years and months.
+    ///
+    /// ```rust
+    /// # use timext::CalendarDuration;
+    /// let d0 = CalendarDuration::new(2, 24);
+    /// assert_eq!(d0.whole_years(), 4);
+    /// assert_eq!(d0.whole_months(), 48);
+    /// ```
+    #[must_use]
     pub const fn new(years: i32, months: i32) -> Self {
         let months = years
             .checked_mul(12)
@@ -21,15 +43,30 @@ impl CalendarDuration {
         Self { months }
     }
 
+    /// Creates a new `CalendarDuration` with provided years.
+    ///
+    /// ```rust
+    /// # use timext::CalendarDuration;
+    /// let d0 = CalendarDuration::years(2);
+    /// assert_eq!(d0.whole_years(), 2);
+    /// assert_eq!(d0.whole_months(), 24);
+    /// ```
+    #[must_use]
     pub const fn years(years: i32) -> Self {
-        let months = years
-            .checked_mul(12)
-            .expect("overflow constructing `timext::CalendarDuration`");
-        Self { months }
+        Self::new(years, 0)
     }
 
+    /// Creates a new `CalendarDuration` with provided months.
+    ///
+    /// ```rust
+    /// # use timext::CalendarDuration;
+    /// let d0 = CalendarDuration::months(24);
+    /// assert_eq!(d0.whole_years(), 2);
+    /// assert_eq!(d0.whole_months(), 24);
+    /// ```
+    #[must_use]
     pub const fn months(months: i32) -> Self {
-        Self { months }
+        Self::new(0, months)
     }
 
     pub const MIN: Self = Self::months(i32::MIN);
@@ -37,7 +74,7 @@ impl CalendarDuration {
 }
 
 impl CalendarDuration {
-    /// Get the number of whole years in the duration.
+    /// Returns the number of whole years in the `CalendarDuration`.
     ///
     /// ```rust
     /// # use timext::ext::NumericCalendarDuration;
@@ -46,11 +83,12 @@ impl CalendarDuration {
     /// assert_eq!(6.months().whole_years(), 0);
     /// assert_eq!((-6).months().whole_years(), 0);
     /// ```
+    #[must_use]
     pub const fn whole_years(self) -> i32 {
         self.months / 12
     }
 
-    /// Get the number of whole months in the duration.
+    /// Returns the number of whole months in the `CalendarDuration`.
     ///
     /// ```rust
     /// # use timext::ext::NumericCalendarDuration;
@@ -59,33 +97,36 @@ impl CalendarDuration {
     /// assert_eq!(6.months().whole_years(), 0);
     /// assert_eq!((-6).months().whole_years(), 0);
     /// ```
+    #[must_use]
     pub const fn whole_months(self) -> i32 {
         self.months
     }
 
-    /// Get the number of months past the number of whole years.
+    /// Returns the number of months past the number of whole years.
     ///
     /// ```rust
     /// # use timext::ext::NumericCalendarDuration;
     /// assert_eq!(13.months().subyear_months(), 1);
     /// assert_eq!((-13).months().subyear_months(), -1);
     /// ```
+    #[must_use]
     pub const fn subyear_months(self) -> i32 {
         self.months % 12
     }
 
-    /// Check if a duration is negative.
+    /// Checks if a duration is negative.
     ///
     /// ```rust
     /// # use timext::ext::NumericCalendarDuration;
     /// assert!(0.months().is_zero());
     /// assert!(!1.months().is_zero());
     /// ```
+    #[must_use]
     pub const fn is_zero(self) -> bool {
         self.months == 0
     }
 
-    /// Check if a duration is positive.
+    /// Checks if a `CalendarDuration` is positive.
     ///
     /// ```rust
     /// # use timext::ext::NumericCalendarDuration;
@@ -93,11 +134,12 @@ impl CalendarDuration {
     /// assert!(!0.months().is_positive());
     /// assert!(!(-1).months().is_positive());
     /// ```
+    #[must_use]
     pub const fn is_positive(self) -> bool {
         self.months.is_positive()
     }
 
-    /// Check if a duration is negative.
+    /// Checks if a `CalendarDuration` is negative.
     ///
     /// ```rust
     /// # use timext::ext::NumericCalendarDuration;
@@ -105,19 +147,42 @@ impl CalendarDuration {
     /// assert!(!0.months().is_negative());
     /// assert!(!1.months().is_negative());
     /// ```
+    #[must_use]
     pub const fn is_negative(self) -> bool {
         self.months.is_negative()
     }
 }
 
 impl CalendarDuration {
+    /// Returns the absolute value of the duration.
+    ///
+    /// ```rust
+    /// # use timext::ext::NumericCalendarDuration;
+    /// assert_eq!(1.months().abs(), 1.months());
+    /// assert_eq!(0.months().abs(), 0.months());
+    /// assert_eq!((-1).months().abs(), 1.months());
+    /// ```
+    #[must_use]
     pub const fn abs(self) -> Self {
         Self::months(self.whole_months().abs())
     }
+}
 
-    pub fn checked_date_add(self, date: Date) -> Option<Date> {
+impl CalendarDuration {
+    /// Returns the sum of provided `Date` and `CalendarDuration`.
+    ///
+    /// ```rust
+    /// # use time::{Date, Month::{October, September}};
+    /// # use timext::{CalendarDuration, ext::NumericCalendarDuration};
+    /// let d0 = Date::from_calendar_date(2018, September, 1).unwrap();
+    /// let d1 = Date::from_calendar_date(2018, October, 1).unwrap();
+    /// let rs = CalendarDuration::checked_date_add(d0, 1.months());
+    /// assert_eq!(rs.unwrap(), d1);
+    /// ```
+    #[must_use]
+    pub fn checked_date_add(date: Date, duration: Self) -> Option<Date> {
         // [1, 12] + [-11, 11]
-        let month = self.subyear_months();
+        let month = duration.subyear_months();
         let month = month.checked_add(date.month() as i32)?;
 
         // Aug(8) + 6 = Feb(2) or Feb(2) - 6 = Aug(8)
@@ -127,7 +192,7 @@ impl CalendarDuration {
         };
 
         debug_assert!((-1..=1).contains(&added));
-        let year = self
+        let year = duration
             .whole_years()
             .checked_add(added)?
             .checked_add(date.year())?;
@@ -144,9 +209,20 @@ impl CalendarDuration {
         Date::from_calendar_date(year, month, day).ok()
     }
 
-    pub fn checked_date_sub(self, date: Date) -> Option<Date> {
-        let duration = self.checked_neg()?;
-        duration.checked_date_add(date)
+    /// Returns the difference of provided `Date` and `CalendarDuration`.
+    ///
+    /// ```rust
+    /// # use time::{Date, Month::{August, September}};
+    /// # use timext::{CalendarDuration, ext::NumericCalendarDuration};
+    /// let d0 = Date::from_calendar_date(2018, September, 1).unwrap();
+    /// let d1 = Date::from_calendar_date(2018, August, 1).unwrap();
+    /// let rs = CalendarDuration::checked_date_sub(d0, 1.months());
+    /// assert_eq!(rs.unwrap(), d1);
+    /// ```
+    #[must_use]
+    pub fn checked_date_sub(date: Date, duration: Self) -> Option<Date> {
+        let duration = duration.checked_neg()?;
+        Self::checked_date_add(date, duration)
     }
 }
 
@@ -222,7 +298,7 @@ impl Display for CalendarDuration {
         let years = self.abs().whole_years();
         let months = self.abs().subyear_months();
         match (self.is_zero(), years, months) {
-            (true, _, _) => (0.).fmt(f).and_then(|_| f.write_str("mo")),
+            (true, _, _) => (0f32).fmt(f).and_then(|_| f.write_str("mo")),
             (_, y, _) if y.is_positive() => y.fmt(f).and_then(|_| f.write_str("y")),
             (_, _, m) if m.is_positive() => m.fmt(f).and_then(|_| f.write_str("mo")),
             (_, _, _) => unreachable!(),
@@ -241,7 +317,7 @@ impl Add for CalendarDuration {
 
 impl AddAssign for CalendarDuration {
     fn add_assign(&mut self, rhs: Self) {
-        *self = *self + rhs
+        *self = *self + rhs;
     }
 }
 
@@ -256,7 +332,7 @@ impl Sub for CalendarDuration {
 
 impl SubAssign for CalendarDuration {
     fn sub_assign(&mut self, rhs: Self) {
-        *self = *self - rhs
+        *self = *self - rhs;
     }
 }
 
