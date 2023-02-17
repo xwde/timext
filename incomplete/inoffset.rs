@@ -1,7 +1,7 @@
 use time::{Month, OffsetDateTime, PrimitiveDateTime, UtcOffset, Weekday};
 
 use crate::error::{InComponentRange, NoComponent};
-use crate::{InCompleteTimeFormat, InDate, InPrimitiveDateTime, InTime};
+use crate::{InComplete, InDate, InPrimitiveDateTime, InTime};
 
 #[derive(Clone, Copy, Eq, PartialEq, Hash)]
 pub struct InOffsetDateTime {
@@ -126,7 +126,7 @@ impl InOffsetDateTime {
     }
 }
 
-impl InCompleteTimeFormat for InOffsetDateTime {
+impl InComplete for InOffsetDateTime {
     type Complete = OffsetDateTime;
 
     fn from_complete(complete: Self::Complete) -> Self {

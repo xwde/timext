@@ -1,8 +1,7 @@
-use time::Month::January;
 use time::{Date, Month, Weekday};
 
 use crate::error::{InComponentRange, NoComponent};
-use crate::{InCompleteTimeFormat, InPrimitiveDateTime, InTime};
+use crate::{InComplete, InPrimitiveDateTime, InTime};
 
 #[derive(Clone, Copy, Eq, PartialEq, Hash)]
 pub struct InDate {
@@ -17,9 +16,8 @@ impl InDate {
         month: Option<Month>,
         day: Option<u8>,
     ) -> Result<Self, InComponentRange> {
-        let date = Self::from_calendar_date_unchecked(year, month, day);
-        let fallback = Date::from_calendar_date(1970, January, 1).unwrap();
-        date.fallback(fallback).map(|_| date)
+        // TODO soundness
+        Ok(Self::from_calendar_date_unchecked(year, month, day))
     }
 
     fn from_calendar_date_unchecked(
@@ -69,7 +67,7 @@ impl InDate {
     }
 }
 
-impl InCompleteTimeFormat for InDate {
+impl InComplete for InDate {
     type Complete = Date;
 
     fn from_complete(complete: Self::Complete) -> Self {

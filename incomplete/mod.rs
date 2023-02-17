@@ -1,17 +1,18 @@
-use crate::error::InComponentRange;
+mod error;
 
-pub mod error;
 mod indate;
 mod inoffset;
 mod inprimitive;
 mod intime;
+
+pub use error::*;
 
 pub use indate::*;
 pub use inoffset::*;
 pub use inprimitive::*;
 pub use intime::*;
 
-pub trait InCompleteTimeFormat: Sized {
+pub trait InComplete: Sized {
     type Complete;
 
     fn from_complete(complete: Self::Complete) -> Self;

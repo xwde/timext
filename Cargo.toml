@@ -12,9 +12,9 @@ path = "./lib.rs"
 serde = ["dep:serde", "time/serde"]
 rand = ["dep:rand", "time/rand"]
 parsing = ["time/parsing", "time/macros"]
-formatting = []
+formatting = ["time/formatting", "time/macros"]
 
 [dependencies]
-time = { version = "0.3.17" }
+time = { version = "0.3.19" }
 serde = { version = "1.0.152", optional = true, default-features = false }
 rand = { version = "0.8.5", optional = true, default-features = false }

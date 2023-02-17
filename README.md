@@ -25,13 +25,13 @@ fn main() {
 ```
 
 - Implements its own `time::Time`, `time::Date`, `time::PrimitiveDateTime`, and
-  `time::OffsetDateTime` types, that are roughly compatible with original, but
-  allow incomplete or partial time formats e.g. `xx:24:xx.845`, `1998-xx-02` or
-  `2016-08 14:xx`. Also extends them with parsing & formatting capabilities.
+  `time::OffsetDateTime` types, that are convertable and roughly compatible with
+  original, but allow incomplete time formats e.g. `xx:24:xx.845`, `1998-xx-02`
+  or `2016-08 14:xx`. Also extends them with parsing & formatting capabilities.
 
 ```rust
 use time::{Date, Month};
-use timext::{PartialTimeFormat, InDate};
+use timext::{InComplete, InDate};
 
 fn main() {
     let d0 = Date::from_calendar_date(2023, Month::January, 28).unwrap();

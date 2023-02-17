@@ -1,7 +1,7 @@
 use time::Time;
 
 use crate::error::{InComponentRange, NoComponent};
-use crate::incomplete::InCompleteTimeFormat;
+use crate::incomplete::InComplete;
 
 #[derive(Clone, Copy, Eq, PartialEq, Hash)]
 pub struct InTime {
@@ -46,9 +46,10 @@ impl InTime {
         second: Option<u8>,
         nanosecond: Option<u32>,
     ) -> Result<Self, InComponentRange> {
-        let time = Self::from_hms_nano_unchecked(hour, minute, second, nanosecond);
-        let fallback = Time::from_hms_nano(0, 0, 0, 0).unwrap();
-        time.fallback(fallback).map(|_| time)
+        // TODO soundness
+        Ok(Self::from_hms_nano_unchecked(
+            hour, minute, second, nanosecond,
+        ))
     }
 
     fn from_hms_nano_unchecked(
@@ -118,7 +119,7 @@ impl InTime {
     }
 }
 
-impl InCompleteTimeFormat for InTime {
+impl InComplete for InTime {
     type Complete = Time;
 
     fn from_complete(complete: Self::Complete) -> Self {

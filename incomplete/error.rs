@@ -12,6 +12,10 @@ impl NoComponent {
     pub fn new(component: &'static str) -> NoComponent {
         Self { component }
     }
+
+    pub fn component(&self) -> &'static str {
+        self.component
+    }
 }
 
 impl Display for NoComponent {
