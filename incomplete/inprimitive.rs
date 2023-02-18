@@ -3,6 +3,11 @@ use time::{Month, PrimitiveDateTime, UtcOffset, Weekday};
 use crate::error::InComponentRange;
 use crate::{InComplete, InDate, InOffsetDateTime, InTime};
 
+#[cfg(feature = "formatting")]
+use crate::{error::InFormat, InFormattable};
+#[cfg(feature = "parsing")]
+use crate::{error::InParse, InParsable};
+
 #[derive(Clone, Copy, Eq, PartialEq, Hash)]
 pub struct InPrimitiveDateTime {
     date: InDate,
@@ -118,6 +123,20 @@ impl InPrimitiveDateTime {
 
     pub fn assume_utc(self) -> InOffsetDateTime {
         self.assume_offset(Some(UtcOffset::UTC))
+    }
+}
+
+#[cfg(feature = "formatting")]
+impl InPrimitiveDateTime {
+    pub fn format(self, format: &impl InFormattable) -> Result<String, InFormat> {
+        format.format(Some(self.date()), Some(self.time()), None)
+    }
+}
+
+#[cfg(feature = "parsing")]
+impl InPrimitiveDateTime {
+    pub fn parse(input: &str, description: &impl InParsable) -> Result<Self, InParse> {
+        description.parse_date_time(input.as_bytes())
     }
 }
 

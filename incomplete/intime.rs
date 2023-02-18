@@ -3,6 +3,11 @@ use time::Time;
 use crate::error::{InComponentRange, NoComponent};
 use crate::incomplete::InComplete;
 
+#[cfg(feature = "formatting")]
+use crate::{error::InFormat, InFormattable};
+#[cfg(feature = "parsing")]
+use crate::{error::InParse, InParsable};
+
 #[derive(Clone, Copy, Eq, PartialEq, Hash)]
 pub struct InTime {
     hour: Option<u8>,
@@ -116,6 +121,20 @@ impl InTime {
 
     pub fn replace_nanosecond(self, nanosecond: Option<u32>) -> Result<Self, InComponentRange> {
         Self::from_hms_nano(self.hour, self.minute, self.minute, nanosecond)
+    }
+}
+
+#[cfg(feature = "formatting")]
+impl InTime {
+    pub fn format(self, format: &impl InFormattable) -> Result<String, InFormat> {
+        format.format(None, Some(self), None)
+    }
+}
+
+#[cfg(feature = "parsing")]
+impl InTime {
+    pub fn parse(input: &str, description: &impl InParsable) -> Result<Self, InParse> {
+        description.parse_time(input.as_bytes())
     }
 }
 

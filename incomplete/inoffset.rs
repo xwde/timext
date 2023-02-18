@@ -3,6 +3,11 @@ use time::{Month, OffsetDateTime, PrimitiveDateTime, UtcOffset, Weekday};
 use crate::error::{InComponentRange, NoComponent};
 use crate::{InComplete, InDate, InPrimitiveDateTime, InTime};
 
+#[cfg(feature = "formatting")]
+use crate::{error::InFormat, InFormattable};
+#[cfg(feature = "parsing")]
+use crate::{error::InParse, InParsable};
+
 #[derive(Clone, Copy, Eq, PartialEq, Hash)]
 pub struct InOffsetDateTime {
     datetime: InPrimitiveDateTime,
@@ -123,6 +128,20 @@ impl InOffsetDateTime {
 
     pub fn replace_nanosecond(self, nanosecond: Option<u32>) -> Result<Self, InComponentRange> {
         self.replace_date_time(self.datetime.replace_nanosecond(nanosecond)?)
+    }
+}
+
+#[cfg(feature = "formatting")]
+impl InOffsetDateTime {
+    pub fn format(self, format: &impl InFormattable) -> Result<String, InFormat> {
+        format.format(Some(self.date()), Some(self.time()), self.offset)
+    }
+}
+
+#[cfg(feature = "parsing")]
+impl InOffsetDateTime {
+    pub fn parse(input: &str, description: &impl InParsable) -> Result<Self, InParse> {
+        description.parse_offset_date_time(input.as_bytes())
     }
 }
 

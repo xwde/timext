@@ -1,16 +1,16 @@
-mod error;
+pub mod error;
 
 mod indate;
 mod inoffset;
 mod inprimitive;
 mod intime;
 
-pub use error::*;
-
 pub use indate::*;
 pub use inoffset::*;
 pub use inprimitive::*;
 pub use intime::*;
+
+use crate::error::InComponentRange;
 
 pub trait InComplete: Sized {
     type Complete;

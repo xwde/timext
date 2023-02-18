@@ -29,6 +29,9 @@ fn main() {
   original, but allow incomplete time formats e.g. `xx:24:xx.845`, `1998-xx-02`
   or `2016-08 14:xx`. Also extends them with parsing & formatting capabilities.
 
+> **Warning**
+> `parsing` & `formatting` are not yet implemented.
+
 ```rust
 use time::{Date, Month};
 use timext::{InComplete, InDate};

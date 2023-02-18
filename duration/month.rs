@@ -390,3 +390,68 @@ macro_rules! impl_md {
 }
 
 impl_md![i8, i16, i32, u8, u16, u32];
+
+#[cfg(test)]
+mod tests {
+    use time::Date;
+    use time::Month::*;
+
+    use crate::ext::CalendarExtension;
+    use crate::ext::NumericCalendarDuration;
+
+    #[test]
+    fn sub_one() {
+        let d0 = Date::from_calendar_date(2024, January, 1).unwrap();
+        let d1 = Date::from_calendar_date(2022, December, 1).unwrap();
+        assert_eq!(d0 - 13.months(), d1);
+    }
+
+    #[test]
+    fn sub_many() {
+        let d0 = Date::from_calendar_date(2024, January, 1).unwrap();
+        let d1 = Date::from_calendar_date(2019, December, 1).unwrap();
+        assert_eq!(d0 - 49.months(), d1);
+    }
+
+    #[test]
+    fn sub_max() {
+        let d0 = Date::from_calendar_date(2024, January, 1).unwrap();
+        let d1 = Date::from_calendar_date(2023, February, 1).unwrap();
+        assert_eq!(d0 - 11.months(), d1);
+    }
+
+    #[test]
+    fn add_one() {
+        let d0 = Date::from_calendar_date(2024, December, 1).unwrap();
+        let d1 = Date::from_calendar_date(2026, January, 1).unwrap();
+        assert_eq!(d0 + 13.months(), d1);
+    }
+
+    #[test]
+    fn add_many() {
+        let d0 = Date::from_calendar_date(2024, December, 1).unwrap();
+        let d1 = Date::from_calendar_date(2029, January, 1).unwrap();
+        assert_eq!(d0 + 49.months(), d1);
+    }
+
+    #[test]
+    fn add_max() {
+        let d0 = Date::from_calendar_date(2024, February, 1).unwrap();
+        let d1 = Date::from_calendar_date(2025, January, 1).unwrap();
+        assert_eq!(d0 + 11.months(), d1);
+    }
+
+    #[test]
+    fn add_leap() {
+        let d0 = Date::from_calendar_date(2024, February, 29).unwrap();
+        let d1 = Date::from_calendar_date(2025, February, 28).unwrap();
+        assert_eq!(d0 + 12.months(), d1);
+    }
+
+    #[test]
+    fn sub_leap() {
+        let d0 = Date::from_calendar_date(2024, February, 29).unwrap();
+        let d1 = Date::from_calendar_date(2023, February, 28).unwrap();
+        assert_eq!(d0 - 12.months(), d1);
+    }
+}

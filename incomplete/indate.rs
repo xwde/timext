@@ -3,6 +3,11 @@ use time::{Date, Month, Weekday};
 use crate::error::{InComponentRange, NoComponent};
 use crate::{InComplete, InPrimitiveDateTime, InTime};
 
+#[cfg(feature = "formatting")]
+use crate::{error::InFormat, InFormattable};
+#[cfg(feature = "parsing")]
+use crate::{error::InParse, InParsable};
+
 #[derive(Clone, Copy, Eq, PartialEq, Hash)]
 pub struct InDate {
     year: Option<i32>,
@@ -64,6 +69,20 @@ impl InDate {
 impl InDate {
     pub fn with_time(self, time: InTime) -> InPrimitiveDateTime {
         InPrimitiveDateTime::new(self, time)
+    }
+}
+
+#[cfg(feature = "formatting")]
+impl InDate {
+    pub fn format(self, format: &impl InFormattable) -> Result<String, InFormat> {
+        format.format(Some(self), None, None)
+    }
+}
+
+#[cfg(feature = "parsing")]
+impl InDate {
+    pub fn parse(input: &str, description: &impl InParsable) -> Result<Self, InParse> {
+        description.parse_date(input.as_bytes())
     }
 }
 
