@@ -1,6 +1,7 @@
 ## xwde: timext
 
-[![Build Status][action-badge]][action-url] [![Docs][docs-badge]][docs-url]
+[![Build Status][action-badge]][action-url]
+[![Docs][docs-badge]][docs-url]
 [![Crate Version][crates-badge]][crates-url]
 
 [action-badge]: https://img.shields.io/github/actions/workflow/status/xwde/timext/build.yaml?branch=main&label=build&logo=github&style=for-the-badge
