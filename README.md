@@ -1,4 +1,14 @@
-### timext
+### xwde: timext
+
+[![Build Status][action-badge]][action-url]
+[![Crate Version][crates-badge]][crates-url]
+
+[action-badge]: https://img.shields.io/github/actions/workflow/status/xwde/timext/build.yaml?label=build&logo=github&style=for-the-badge
+[action-url]: https://github.com/xwde/countio/actions/workflows/build.yaml
+[crates-badge]: https://img.shields.io/crates/v/timext.svg?logo=rust&style=for-the-badge
+[crates-url]: https://crates.io/crates/timext
+
+> **Warning** : The library is in active development. Expect breaking changes.
 
 The collection of [time-rs/time](https://github.com/time-rs/time/) extensions
 for calendar arithmetics, incomplete formats handling, imprecise time, and other
@@ -21,27 +31,6 @@ fn main() {
     let d0 = Date::from_calendar_date(2024, Month::February, 29).unwrap();
     let d1 = Date::from_calendar_date(2025, Month::February, 28).unwrap();
     assert_eq!(d0 + 1.years(), d1);
-}
-```
-
-- Implements its own `time::Time`, `time::Date`, `time::PrimitiveDateTime`, and
-  `time::OffsetDateTime` types, that are convertable and roughly compatible with
-  original, but allow incomplete time formats e.g. `xx:24:xx.845`, `1998-xx-02`
-  or `2016-08 14:xx`. Also extends them with parsing & formatting capabilities.
-
-> **Warning**
-> `parsing` & `formatting` are not yet implemented.
-
-```rust
-use time::{Date, Month};
-use timext::{InComplete, InDate};
-
-fn main() {
-    let d0 = Date::from_calendar_date(2023, Month::January, 28).unwrap();
-    let d1 = InDate::from_calendar_date(None, None, Some(28)).unwrap();
-    let d1 = d1.replace_year(Some(2023)).unwrap();
-    let d1 = d1.replace_month(Some(Month::January)).unwrap();
-    assert_eq!(d0, d1.into_complete().unwrap());
 }
 ```
 

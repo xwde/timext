@@ -396,7 +396,6 @@ mod tests {
     use time::Date;
     use time::Month::*;
 
-    use crate::ext::CalendarExtension;
     use crate::ext::NumericCalendarDuration;
 
     #[test]
