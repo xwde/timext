@@ -1,4 +1,4 @@
 #[cfg(feature = "rand")]
-pub mod rand;
+mod rand;
 #[cfg(feature = "serde")]
-pub mod serde;
+mod serde;
