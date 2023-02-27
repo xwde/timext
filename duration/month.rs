@@ -4,23 +4,11 @@ use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssi
 use time::util::days_in_year_month;
 use time::{Date, Month};
 
-/// TODO Represent fraction of week with opt f32
-/// see https://github.com/xwde/timext/issues/6
-///
-/// ```rust
-/// # use time::{Date, Month};
-/// # use timext::ext::NumericCalendarDuration;
-///
-/// let d0 = Date::from_calendar_date(2023, Month::January, 31).unwrap();
-/// let d1 = Date::from_calendar_date(2023, Month::February, 28).unwrap();
-/// assert_eq!(d0 + 1.months(), d1);
-///
-/// let d0 = Date::from_calendar_date(2024, Month::February, 29).unwrap();
-/// let d1 = Date::from_calendar_date(2025, Month::February, 28).unwrap();///
-/// assert_eq!(d0 + 1.years(), d1);
-/// ```
-#[derive(Clone, Copy, Default, PartialEq, Eq, Hash, PartialOrd, Ord, Debug)]
+/// A span of time with month precision.
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CalendarDuration {
+    /// TODO Represent fraction of week with opt f32
+    /// see `<https://github.com/xwde/timext/issues/6>`
     months: i32,
 }
 
@@ -34,7 +22,7 @@ impl CalendarDuration {
     /// assert_eq!(d0.whole_months(), 48);
     /// ```
     #[must_use]
-    pub const fn new(years: i32, months: i32) -> Self {
+    pub fn new(years: i32, months: i32) -> Self {
         let months = years
             .checked_mul(12)
             .expect("overflow constructing `timext::CalendarDuration`")
@@ -52,7 +40,7 @@ impl CalendarDuration {
     /// assert_eq!(d0.whole_months(), 24);
     /// ```
     #[must_use]
-    pub const fn years(years: i32) -> Self {
+    pub fn years(years: i32) -> Self {
         Self::new(years, 0)
     }
 
@@ -65,12 +53,12 @@ impl CalendarDuration {
     /// assert_eq!(d0.whole_months(), 24);
     /// ```
     #[must_use]
-    pub const fn months(months: i32) -> Self {
+    pub fn months(months: i32) -> Self {
         Self::new(0, months)
     }
 
-    pub const MIN: Self = Self::months(i32::MIN);
-    pub const MAX: Self = Self::months(i32::MAX);
+    pub const MIN: Self = Self { months: i32::MIN };
+    pub const MAX: Self = Self { months: i32::MAX };
 }
 
 impl CalendarDuration {
@@ -163,7 +151,7 @@ impl CalendarDuration {
     /// assert_eq!((-1).months().abs(), 1.months());
     /// ```
     #[must_use]
-    pub const fn abs(self) -> Self {
+    pub fn abs(self) -> Self {
         Self::months(self.whole_months().abs())
     }
 }

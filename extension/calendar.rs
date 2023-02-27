@@ -14,6 +14,7 @@ mod sealed {
     impl Sealed for OffsetDateTime {}
 }
 
+/// Enable arithmetic operations with [`CalendarDuration`].
 pub trait CalendarExtension: sealed::Sealed + Sized {
     #[must_use]
     fn checked_calendar_add(self, duration: CalendarDuration) -> Option<Self>;

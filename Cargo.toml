@@ -2,7 +2,7 @@
 
 [package]
 name = "timext"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 
 license = "MIT"
@@ -18,6 +18,9 @@ repository = "https://github.com/xwde/timext"
 homepage = "https://github.com/xwde/timext"
 categories = ["date-and-time", "no-std", "parser-implementations", "value-formatting"]
 keywords = ["date", "time", "calendar", "duration"]
+
+[package.metadata.docs.rs]
+all-features = true
 
 [lib]
 path = "./lib.rs"

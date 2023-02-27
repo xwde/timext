@@ -1,12 +1,14 @@
-### xwde: timext
+## xwde: timext
 
-[![Build Status][action-badge]][action-url]
+[![Build Status][action-badge]][action-url] [![Docs][docs-badge]][docs-url]
 [![Crate Version][crates-badge]][crates-url]
 
-[action-badge]: https://img.shields.io/github/actions/workflow/status/xwde/timext/build.yaml?label=build&logo=github&style=for-the-badge
-[action-url]: https://github.com/xwde/countio/actions/workflows/build.yaml
+[action-badge]: https://img.shields.io/github/actions/workflow/status/xwde/timext/build.yaml?branch=main&label=build&logo=github&style=for-the-badge
+[action-url]: https://github.com/xwde/timext/actions/workflows/build.yaml
 [crates-badge]: https://img.shields.io/crates/v/timext.svg?logo=rust&style=for-the-badge
 [crates-url]: https://crates.io/crates/timext
+[docs-badge]: https://img.shields.io/docsrs/timext?logo=Docs.rs&style=for-the-badge
+[docs-url]: http://docs.rs/timext
 
 > **Warning** : The library is in active development. Expect breaking changes.
 
