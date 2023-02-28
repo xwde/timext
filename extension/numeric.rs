@@ -7,7 +7,7 @@ mod sealed {
     impl Sealed for f64 {}
 }
 
-/// Create [`CalendarDuration`]s from numeric literals.
+/// Create [`CalendarDuration`] from numeric literals.
 pub trait NumericCalendarDuration: sealed::Sealed {
     fn months(self) -> CalendarDuration;
     fn years(self) -> CalendarDuration;

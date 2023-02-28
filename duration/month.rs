@@ -387,31 +387,17 @@ mod tests {
     use crate::ext::NumericCalendarDuration;
 
     #[test]
-    fn sub_one() {
-        let d0 = Date::from_calendar_date(2024, January, 1).unwrap();
-        let d1 = Date::from_calendar_date(2022, December, 1).unwrap();
-        assert_eq!(d0 - 13.months(), d1);
-    }
-
-    #[test]
-    fn sub_many() {
-        let d0 = Date::from_calendar_date(2024, January, 1).unwrap();
-        let d1 = Date::from_calendar_date(2019, December, 1).unwrap();
-        assert_eq!(d0 - 49.months(), d1);
-    }
-
-    #[test]
-    fn sub_max() {
-        let d0 = Date::from_calendar_date(2024, January, 1).unwrap();
-        let d1 = Date::from_calendar_date(2023, February, 1).unwrap();
-        assert_eq!(d0 - 11.months(), d1);
-    }
-
-    #[test]
     fn add_one() {
         let d0 = Date::from_calendar_date(2024, December, 1).unwrap();
         let d1 = Date::from_calendar_date(2026, January, 1).unwrap();
         assert_eq!(d0 + 13.months(), d1);
+    }
+
+    #[test]
+    fn sub_one() {
+        let d0 = Date::from_calendar_date(2024, January, 1).unwrap();
+        let d1 = Date::from_calendar_date(2022, December, 1).unwrap();
+        assert_eq!(d0 - 13.months(), d1);
     }
 
     #[test]
@@ -422,10 +408,24 @@ mod tests {
     }
 
     #[test]
+    fn sub_many() {
+        let d0 = Date::from_calendar_date(2024, January, 1).unwrap();
+        let d1 = Date::from_calendar_date(2019, December, 1).unwrap();
+        assert_eq!(d0 - 49.months(), d1);
+    }
+
+    #[test]
     fn add_max() {
         let d0 = Date::from_calendar_date(2024, February, 1).unwrap();
         let d1 = Date::from_calendar_date(2025, January, 1).unwrap();
         assert_eq!(d0 + 11.months(), d1);
+    }
+
+    #[test]
+    fn sub_max() {
+        let d0 = Date::from_calendar_date(2024, January, 1).unwrap();
+        let d1 = Date::from_calendar_date(2023, February, 1).unwrap();
+        assert_eq!(d0 - 11.months(), d1);
     }
 
     #[test]
