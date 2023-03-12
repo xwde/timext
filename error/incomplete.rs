@@ -3,14 +3,14 @@ use std::fmt::{Debug, Display, Formatter, Result as FmtResult};
 
 /// An error type indicating that an expected component was not found, causing a failure.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub struct Insufficient {
+pub struct InCompleteError {
     /// Name of the component.
     name: &'static str,
 }
 
-impl Insufficient {
+impl InCompleteError {
     /// Create `Insufficient` with the specified component name.
-    pub fn new(component: &'static str) -> Insufficient {
+    pub fn new(component: &'static str) -> InCompleteError {
         Self { name: component }
     }
 
@@ -20,10 +20,10 @@ impl Insufficient {
     }
 }
 
-impl Display for Insufficient {
+impl Display for InCompleteError {
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         write!(f, "component `{}` does not exist", self.name)
     }
 }
 
-impl Error for Insufficient {}
+impl Error for InCompleteError {}

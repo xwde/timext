@@ -3,27 +3,27 @@ use std::fmt::{Debug, Display, Formatter, Result as FmtResult};
 
 use time::error::ComponentRange;
 
-use crate::error::Insufficient;
+use crate::error::InCompleteError;
 
 ///
 #[derive(Debug)]
 pub enum InComponentRange {
-    Insufficient(Insufficient),
+    InComplete(InCompleteError),
     ComponentRange(ComponentRange),
 }
 
 impl Display for InComponentRange {
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         match &self {
-            InComponentRange::Insufficient(e) => Display::fmt(e, f),
+            InComponentRange::InComplete(e) => Display::fmt(e, f),
             InComponentRange::ComponentRange(e) => Display::fmt(e, f),
         }
     }
 }
 
-impl From<Insufficient> for InComponentRange {
-    fn from(error: Insufficient) -> Self {
-        Self::Insufficient(error)
+impl From<InCompleteError> for InComponentRange {
+    fn from(error: InCompleteError) -> Self {
+        Self::InComplete(error)
     }
 }
 

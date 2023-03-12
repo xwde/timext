@@ -1,5 +1,5 @@
-mod insufficient;
+mod incomplete;
 mod range;
 
-pub use self::insufficient::*;
-pub use self::range::*;
+pub use incomplete::*;
+pub use range::*;

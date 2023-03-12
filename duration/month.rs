@@ -7,7 +7,7 @@ use time::{Date, Month};
 /// A span of time with month precision.
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct CalendarDuration {
-    /// TODO Represent fraction of week with opt f32
+    /// TODO: Represent fraction of week with opt f32.
     /// see `<https://github.com/xwde/timext/issues/6>`
     months: i32,
 }
@@ -333,7 +333,7 @@ impl Neg for CalendarDuration {
     }
 }
 
-// TODO add arithmetic for f32/f64
+// TODO: Add arithmetic for f32/f64.
 
 macro_rules! impl_md {
     ($($t:ty),+) => {$(
