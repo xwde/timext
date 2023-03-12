@@ -27,9 +27,8 @@ impl<'de> Visitor<'de> for CalendarDurationVisitor {
     where
         A: SeqAccess<'de>,
     {
-        let months = seq
-            .next_element()?
-            .ok_or_else(|| <A::Error as Error>::custom("expected months"))?;
+        let months = seq.next_element()?;
+        let months = months.ok_or_else(|| Error::custom("expected months"))?;
         Ok(CalendarDuration::months(months))
     }
 }
