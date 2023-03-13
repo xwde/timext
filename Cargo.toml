@@ -33,5 +33,5 @@ parsing = ["time/parsing", "time/macros"]
 
 [dependencies]
 time = { version = "0.3.20" }
-serde = { version = "1.0.152", optional = true, default-features = false }
+serde = { version = "1.0.155", optional = true, default-features = false }
 rand = { version = "0.8.5", optional = true, default-features = false }
